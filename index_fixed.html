@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#10294D">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ismail">
+<title>Ismail — فیکٹری اسٹاک مینجمنٹ</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --navy:#10294D;
+    --navy-2:#1B3E73;
+    --navy-soft:#EEF2F8;
+    --bg:#FAF9F6;
+    --card:#FFFFFF;
+    --border:#E4E1D6;
+    --ink:#1A1A1A;
+    --muted:#767267;
+    --green:#1E7D4B;
+    --green-bg:#E9F5EE;
+    --red:#B23A2E;
+    --red-bg:#FBEAE7;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Noto Naskh Arabic', 'Segoe UI', serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  #app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;padding-bottom:40px;}
+
+  .topbar{
+    background:var(--navy);
+    color:#fff;
+    padding:14px 16px;
+    position:sticky;top:0;z-index:20;
+    display:flex;align-items:center;gap:12px;
+    border-bottom:3px solid var(--navy-2);
+  }
+  .topbar .back{
+    background:rgba(255,255,255,.12);
+    border:none;color:#fff;font-size:22px;
+    width:36px;height:36px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;flex-shrink:0;
+  }
+  .brand-mark{display:flex;align-items:center;gap:10px;}
+  .brand-mark svg{display:block;}
+  .topbar h1{font-size:16px;font-weight:600;margin:0;color:#fff;}
+  .topbar-spacer{flex:1;}
+  .install-btn{
+    background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+    color:#fff;font-size:11.5px;padding:6px 10px;border-radius:8px;
+    cursor:pointer;font-family:inherit;
+  }
+
+  .content{padding:16px 14px 10px;}
+
+  .home-hero{text-align:center;padding:10px 10px 22px;}
+  .home-hero svg{margin-bottom:2px;}
+  .home-hero .app-sub{font-size:13.5px;color:var(--muted);letter-spacing:.5px;}
+
+  .btn-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-bottom:12px;
+  }
+  .grid-btn{
+    background:var(--navy);
+    color:#fff;
+    border:1.5px solid var(--navy-2);
+    border-radius:14px;
+    padding:18px 12px;
+    cursor:pointer;
+    text-align:center;
+    font-family:inherit;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    min-height:118px;
+    transition:transform .08s, background .15s;
+  }
+  .grid-btn:active{transform:scale(.97);background:var(--navy-2);}
+  .grid-btn .icon{
+    width:40px;height:40px;border-radius:10px;
+    background:rgba(255,255,255,.14);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .grid-btn .icon svg{width:22px;height:22px;}
+  .grid-btn .label{font-size:14.5px;font-weight:600;line-height:1.35;}
+  .grid-btn .sub{font-size:11.5px;color:#B9C6DC;line-height:1.3;}
+  .grid-btn.full{grid-column:1 / -1;min-height:80px;flex-direction:row;justify-content:flex-start;padding:16px 18px;gap:14px;text-align:right;}
+  .grid-btn.full .icon{flex-shrink:0;}
+  .grid-btn.full .txt{display:flex;flex-direction:column;}
+
+  .sel-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .sel-btn{
+    background:var(--navy);
+    color:#fff;
+    border:1.5px solid var(--navy-2);
+    border-radius:12px;
+    padding:14px 10px;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    text-align:center;
+    line-height:1.35;
+    min-height:56px;
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .08s, background .15s;
+    word-break:break-word;
+  }
+  .sel-btn:active{transform:scale(.97);}
+  .sel-btn.active{background:#fff;color:var(--navy);border-color:var(--navy);box-shadow:0 0 0 2px var(--navy) inset;}
+
+  .type-btn{
+    background:var(--card);color:var(--navy);
+    border:2px solid var(--navy);
+    border-radius:12px;
+    padding:20px 12px;
+    font-family:inherit;font-size:15px;font-weight:700;
+    cursor:pointer;text-align:center;
+    min-height:80px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  }
+  .type-btn:active{transform:scale(.97);background:var(--navy-soft);}
+  .type-btn.bag{border-color:#1E7D4B;color:#1E7D4B;}
+  .type-btn.roll{border-color:#B23A2E;color:#B23A2E;}
+  .type-btn .emoji{font-size:26px;}
+
+  .section-title{font-size:14px;font-weight:600;color:var(--navy);margin:16px 0 10px;}
+
+  .search-box{
+    display:flex;align-items:center;gap:8px;
+    background:var(--card);border:1px solid var(--border);
+    border-radius:10px;padding:10px 12px;margin-bottom:10px;
+  }
+  .search-box input{
+    border:none;outline:none;flex:1;background:transparent;
+    font-family:inherit;font-size:14.5px;color:var(--ink);
+  }
+
+  .inline-add{display:flex;gap:8px;margin-top:8px;}
+  .inline-add input{flex:1;border:1px solid var(--border);border-radius:8px;padding:10px;font-family:inherit;font-size:14px;}
+  .btn-small{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:0 16px;font-size:13.5px;cursor:pointer;font-family:inherit;}
+
+  .balance-card{
+    background:#fff;border:1px solid var(--border);border-radius:12px;
+    padding:14px 16px;margin:14px 0;display:flex;align-items:center;justify-content:space-between;
+    gap:10px;
+  }
+  .balance-card .meta{font-size:13px;color:var(--muted);}
+  .balance-card .meta b{color:var(--ink);font-weight:600;}
+  .balance-card .amount{font-size:22px;font-weight:700;font-family:'Poppins',sans-serif;}
+  .amount.pos{color:var(--green);}
+  .amount.neg{color:var(--red);}
+  .settle-btn{
+    display:block;width:100%;text-align:center;
+    background:var(--navy-soft);color:var(--navy);border:1px dashed var(--navy-2);
+    border-radius:10px;padding:10px;font-size:13.5px;cursor:pointer;font-family:inherit;margin-bottom:16px;
+  }
+
+  .form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px 12px;
+    margin-bottom:6px;
+  }
+  .form-grid .field.full{grid-column:1 / -1;}
+  .field{margin-bottom:0;}
+  .field label{display:block;font-size:12.5px;color:var(--ink);margin-bottom:5px;font-weight:600;}
+  .field label .req{color:var(--red);}
+  .field input, .field select{
+    width:100%;padding:10px 11px;border:1px solid var(--border);border-radius:9px;
+    font-family:inherit;font-size:14px;background:#fff;color:var(--ink);
+  }
+  .field input.err{border-color:var(--red);}
+  .field .errmsg{color:var(--red);font-size:11px;margin-top:3px;}
+
+  .primary-btn{
+    width:100%;background:var(--navy);color:#fff;border:none;border-radius:11px;
+    padding:14px;font-size:15.5px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:14px;
+  }
+  .ghost-btn{
+    width:100%;background:transparent;color:var(--navy);border:1px solid var(--navy);border-radius:11px;
+    padding:12px;font-size:14.5px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:10px;
+  }
+
+  .empty-state{text-align:center;padding:30px 20px;color:var(--muted);font-size:14px;}
+
+  .overlay{
+    position:fixed;inset:0;background:rgba(16,41,77,.55);
+    display:flex;align-items:flex-end;justify-content:center;z-index:50;
+  }
+  .receipt-sheet, .sheet-popup{
+    background:#fff;width:100%;max-width:480px;border-radius:18px 18px 0 0;
+    padding:22px 20px 24px;max-height:88vh;overflow-y:auto;
+  }
+  .sheet-title{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:14px;text-align:center;}
+
+  .receipt-head{text-align:center;margin-bottom:8px;}
+  .receipt-head .app-sub{font-size:12.5px;color:var(--muted);margin-top:2px;}
+  .receipt-head .kind{font-size:13px;color:var(--navy);margin-top:6px;font-weight:600;}
+  .receipt-divider{border-top:1.5px dashed var(--border);margin:12px 0;}
+  .receipt-row{display:flex;justify-content:space-between;padding:5px 0;font-size:14px;}
+  .receipt-row .k{color:var(--muted);}
+  .receipt-row .v{font-weight:600;}
+  .receipt-balance{text-align:center;margin:14px 0 6px;}
+  .receipt-balance .lbl{font-size:12.5px;color:var(--muted);}
+  .receipt-balance .val{font-size:26px;font-weight:700;font-family:'Poppins',sans-serif;margin-top:2px;}
+
+  .settlement-line{
+    background:var(--navy-soft);border:1px dashed var(--navy-2);border-radius:10px;
+    padding:10px 12px;margin:10px 0;text-align:center;font-size:13px;color:var(--navy-2);
+  }
+
+  .toast{
+    position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+    background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;
+    font-size:13.5px;z-index:60;box-shadow:0 6px 18px rgba(0,0,0,.2);
+    max-width:88%;text-align:center;
+  }
+
+  .lock-wrap{
+    min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:30px 26px;text-align:center;
+  }
+  .lock-wrap .app-sub{font-size:13.5px;color:var(--muted);margin-top:2px;margin-bottom:26px;}
+  .lock-wrap input{
+    width:100%;max-width:260px;text-align:center;letter-spacing:4px;font-size:20px;
+    padding:12px;border:1px solid var(--border);border-radius:10px;margin-bottom:12px;font-family:inherit;
+  }
+  .lock-wrap input.err{border-color:var(--red);}
+  .lock-wrap .primary-btn{max-width:260px;}
+  .lock-wrap .lock-err{color:var(--red);font-size:13px;margin-bottom:10px;}
+  .change-link{margin-top:18px;font-size:12.5px;color:var(--navy-2);text-decoration:underline;cursor:pointer;background:none;border:none;font-family:inherit;}
+
+  .records-table-wrap{
+    background:#fff;border:1px solid var(--border);border-radius:12px;
+    margin-top:10px;overflow-x:auto;
+  }
+  .records-table{
+    width:100%;border-collapse:collapse;font-size:13.5px;
+    direction:rtl;
+  }
+  .records-table thead tr{background:var(--navy);color:#fff;}
+  .records-table th{
+    padding:11px 8px;text-align:right;font-weight:600;font-size:12.5px;
+    white-space:nowrap;
+  }
+  .records-table tbody tr{
+    border-bottom:1px solid var(--border);
+    cursor:pointer;
+    transition:background .15s;
+    -webkit-tap-highlight-color:rgba(16,41,77,.1);
+    user-select:none;
+  }
+  .records-table tbody tr:active{background:var(--navy-soft);}
+  .records-table tbody tr.pressed{background:#FFE5B4 !important;transition:background .3s;}
+  .records-table td{padding:11px 8px;color:var(--ink);white-space:nowrap;}
+  .records-table td.balance{font-weight:700;text-align:center;}
+  .records-table td.balance.pos{color:var(--green);}
+  .records-table td.balance.neg{color:var(--red);}
+
+  .loading-box{text-align:center;padding:40px 20px;color:var(--muted);}
+  .spinner{
+    display:inline-block;width:32px;height:32px;
+    border:3px solid var(--border);border-top-color:var(--navy);
+    border-radius:50%;animation:spin 1s linear infinite;
+    margin-bottom:12px;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .table-header{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:10px;gap:10px;
+  }
+  .table-header .info{font-size:13px;color:var(--muted);}
+  .table-header .save-btn{
+    background:var(--navy-soft);color:var(--navy);
+    border:1px solid var(--navy-2);border-radius:8px;
+    padding:8px 14px;font-size:12.5px;font-family:inherit;
+    cursor:pointer;font-weight:600;
+  }
+
+  .popup-btn{
+    width:100%;padding:14px;margin-bottom:10px;
+    border-radius:10px;font-family:inherit;font-size:15px;font-weight:600;
+    cursor:pointer;border:none;
+  }
+  .popup-btn.edit{background:var(--navy);color:#fff;}
+  .popup-btn.delete{background:var(--red);color:#fff;}
+  .popup-btn.cancel{background:transparent;color:var(--muted);border:1px solid var(--border);}
+
+  .info-msg{
+    background:#FFF8E1;border:1px solid #FFE082;
+    border-radius:10px;padding:14px 16px;margin:14px 0;
+    font-size:14px;color:#5D4037;line-height:1.7;text-align:right;
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ===================== متغیرات ===================== */
+const APPS_SCRIPT_URL = "/api/submit";
+let BRANDS = [];
+let toastTimer = null;
+let deferredPrompt = null;
+let longPressTimer = null;
+let pressedRow = null;
+
+let data = {
+  companies: [],
+  brands: {},
+  entries: [],
+  settings: { password: "1234" }
+};
+
+let unlocked = false;
+let state = { screen: 'home' };
+let formDraft = {};
+let fieldErrors = {};
+
+const svgLogo = (size)=>`
+<svg width="${size}" height="${size}" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="18" y="20" width="10" height="80" rx="2" fill="#10294D"/>
+<rect x="36" y="20" width="10" height="80" rx="2" fill="#10294D"/>
+<path d="M96 34 C88 24 72 22 62 30 C52 38 54 50 66 55 C78 60 90 63 90 75 C90 87 76 94 64 88 C58 85 54 80 52 74"
+ stroke="#10294D" stroke-width="9" stroke-linecap="round" fill="none"/>
+</svg>`;
+
+const iconIn = `<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M4 19h16"/></svg>`;
+const iconOut = `<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V9"/><path d="M7 13l5-5 5 5"/><path d="M4 5h16"/></svg>`;
+const iconRec = `<svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg>`;
+
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function fmt(n){ return Number(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:3}); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function escAttr(s){ return String(s).replace(/"/g,'&quot;'); }
+
+async function loadData(){
+  try{
+    const r = await window.storage.get('ledger_data', true);
+    if(r && r.value){
+      const parsed = JSON.parse(r.value);
+      data = { ...data, ...parsed };
+      if(!data.brands) data.brands = {};
+      if(!data.settings) data.settings = { password: "1234" };
+    } else { seedDefault(); await persist(); }
+  }catch(e){ seedDefault(); await persist(); }
+  await ensureDefaults();
+  render();
+}
+
+async function ensureDefaults(){
+  let changed = false;
+  if(!data.companies) { data.companies = []; changed = true; }
+  if(!data.brands) { data.brands = {}; changed = true; }
+  if(!data.settings) { data.settings = { password: "1234" }; changed = true; }
+  if(!data.settings.password) { data.settings.password = "1234"; changed = true; }
+  if(changed) await persist();
+}
+
+function seedDefault(){
+  data = { companies: [], brands: {}, entries: [], settings: { password: "1234" } };
+}
+
+async function persist(){
+  try{ await window.storage.set('ledger_data', JSON.stringify(data), true); }
+  catch(e){ console.error('save failed', e); }
+}
+
+function showToast(msg){
+  clearTimeout(toastTimer);
+  const el = document.getElementById('toast-el');
+  if(el) el.remove();
+  const div = document.createElement('div');
+  div.className='toast'; div.id='toast-el'; div.textContent=msg;
+  document.body.appendChild(div);
+  toastTimer = setTimeout(()=>div.remove(), 2400);
+}
+
+function go(screen, params={}){
+  state = { screen, ...params };
+  formDraft = {};
+  fieldErrors = {};
+  render();
+  window.scrollTo(0,0);
+}
+
+function brandsFor(company){
+  if(!data.brands) return [];
+  return data.brands[company] || [];
+}
+
+async function addBrandToCompany(company, brandName){
+  if(!data.brands) data.brands = {};
+  if(!data.brands[company]) data.brands[company] = [];
+  if(!data.brands[company].includes(brandName)){
+    data.brands[company].push(brandName);
+    await persist();
+    return true;
+  }
+  return false;
+}
+
+async function sendToSheet(payload){
+  try{
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload)
+    });
+    return await res.json();
+  }catch(err){
+    console.error('send error:', err);
+    return { status:'error', message: String(err) };
+  }
+}
+
+async function syncBrandData(company, brand){
+  const result = await sendToSheet({
+    action: 'getBrandData',
+    company: company,
+    brand: brand
+  });
+  if(result.status === 'ok' && result.entries){
+    return result.entries;
+  }
+  return [];
+}
+
+function startLongPress(e){ e.preventDefault(); }
+function cancelLongPress(){
+  if(longPressTimer){ clearTimeout(longPressTimer); longPressTimer = null; }
+  if(pressedRow){ pressedRow.classList.remove('pressed'); pressedRow = null; }
+}
+/* ===================== Render ===================== */
+function render(){
+  const app = document.getElementById('app');
+  if(!unlocked){
+    app.innerHTML = renderLock();
+    attachHandlers();
+    return;
+  }
+  let html = topbarHtml();
+  html += `<div class="content">`;
+  if(state.screen==='home') html += renderHome();
+  else if(state.screen==='pick-company') html += renderPickCompany();
+  else if(state.screen==='pick-brand') html += renderPickBrand();
+  else if(state.screen==='form') html += renderForm();
+  else if(state.screen==='records') html += renderRecordsCompanies();
+  else if(state.screen==='records-brand-type') html += renderRecordsBrandType();
+  else if(state.screen==='records-brand') html += renderRecordsTable();
+  html += `</div>`;
+  app.innerHTML = html;
+  attachHandlers();
+  if(state.preview) renderReceiptOverlay(state.preview);
+  if(state.showEntryOptions) renderEntryOptions();
+}
+
+function renderLock(){
+  const err = fieldErrors.lock;
+  return `<div class="lock-wrap">
+    ${svgLogo(60)}
+    <div class="app-sub" style="margin-top:4px;">فیکٹری اسٹاک مینجمنٹ پورٹل</div>
+    ${err?`<div class="lock-err">پاس ورڈ غلط ہے، دوبارہ کوشش کریں</div>`:''}
+    <input id="lockPass" type="password" placeholder="پاس ورڈ درج کریں" class="${err?'err':''}">
+    <button class="primary-btn" data-act="unlock" style="max-width:260px">داخل ہوں</button>
+    <button class="change-link" data-act="change-password">پاس ورڈ تبدیل کریں</button>
+  </div>`;
+}
+
+function topbarHtml(){
+  const titles = {
+    home:'',
+    'pick-company': state.kind==='bag' ? 'بوروں کی اینٹری — کمپنی' : 'گولوں کی اینٹری — کمپنی',
+    'pick-brand': state.kind==='bag' ? 'بوروں کی اینٹری — برانڈ' : 'گولوں کی اینٹری — برانڈ',
+    form: state.kind==='bag' ? 'بوروں کی اینٹری' : 'گولوں کی اینٹری',
+    records:'ریکارڈ دیکھیں',
+    'records-brand-type': state.company || '',
+    'records-brand': state.company || ''
+  };
+  const showBack = state.screen!=='home';
+  const showInstall = deferredPrompt && state.screen==='home';
+  return `<div class="topbar">
+    ${showBack?`<button class="back" data-act="back">›</button>`:''}
+    ${state.screen==='home' ? `<div class="brand-mark">${svgLogo(28)}</div>` : `<h1>${titles[state.screen]||''}</h1>`}
+    <div class="topbar-spacer"></div>
+    ${showInstall?`<button class="install-btn" data-act="install">انسٹال</button>`:''}
+  </div>`;
+}
+
+function renderHome(){
+  return `
+    <div class="home-hero">
+      ${svgLogo(64)}
+      <div class="app-sub">فیکٹری اسٹاک مینجمنٹ پورٹل</div>
+    </div>
+    <div class="btn-grid">
+      <button class="grid-btn" data-act="go-entry" data-kind="bag">
+        <div class="icon">${iconIn}</div>
+        <div class="label">بوروں کی اینٹری</div>
+        <div class="sub">آنے والا مال</div>
+      </button>
+      <button class="grid-btn" data-act="go-entry" data-kind="roll">
+        <div class="icon">${iconOut}</div>
+        <div class="label">گولوں کی اینٹری</div>
+        <div class="sub">جانے والا مال</div>
+      </button>
+    </div>
+    <div class="btn-grid">
+      <button class="grid-btn full" data-act="go-records">
+        <div class="icon">${iconRec}</div>
+        <div class="txt">
+          <div class="label">ریکارڈ دیکھیں</div>
+          <div class="sub">کمپنیوں کا مکمل حساب کتاب</div>
+        </div>
+      </button>
+    </div>
+    <button class="change-link" data-act="change-password" style="display:block;margin:14px auto 0;">پاس ورڈ تبدیل کریں</button>
+  `;
+}
+
+function renderPickCompany(){
+  const company = state.company||null;
+  let html = `<div class="section-title">کمپنی منتخب کریں</div>`;
+  html += `<div class="search-box"><input id="companySearch" placeholder="کمپنی کا نام تلاش کریں" value="${escAttr(formDraft.companySearch||'')}"></div>`;
+  const q = (formDraft.companySearch||'').trim();
+  const filtered = data.companies.filter(c=>!q || c.includes(q));
+  if(filtered.length > 0){
+    html += `<div class="sel-grid">`;
+    filtered.forEach(c=>{
+      html += `<button class="sel-btn ${c===company?'active':''}" data-act="pick-company" data-name="${escAttr(c)}">${c}</button>`;
+    });
+    html += `</div>`;
+  } else {
+    html += `<div class="empty-state">کوئی کمپنی موجود نہیں</div>`;
+  }
+  html += `<div class="section-title">نئی کمپنی شامل کریں</div>`;
+  html += `<div class="inline-add">
+    <input id="newCompanyName" placeholder="نئی کمپنی کا نام لکھیں">
+    <button class="btn-small" data-act="add-company">شامل کریں</button>
+  </div>`;
+  if(company){
+    html += `<button class="primary-btn" data-act="next-to-brand">آگے بڑھیں — برانڈ منتخب کریں ›</button>`;
+  }
+  return html;
+}
+
+function renderPickBrand(){
+  const company = state.company;
+  const brand = state.brand||null;
+  const companyBrands = brandsFor(company);
+  let html = `<div class="section-title">کمپنی: ${company}</div>`;
+  html += `<div class="section-title">برانڈ منتخب کریں</div>`;
+  if(companyBrands.length > 0){
+    html += `<div class="sel-grid">`;
+    companyBrands.forEach(b=>{
+      html += `<button class="sel-btn ${b===brand?'active':''}" data-act="pick-brand" data-name="${escAttr(b)}">${b}</button>`;
+    });
+    html += `</div>`;
+  } else {
+    html += `<div class="empty-state">ابھی کوئی برانڈ نہیں — نیچے سے نیا برانڈ شامل کریں</div>`;
+  }
+  html += `<div class="section-title">نیا برانڈ شامل کریں</div>`;
+  html += `<div class="inline-add">
+    <input id="newBrandName" placeholder="نئے برانڈ کا نام لکھیں">
+    <button class="btn-small" data-act="add-brand">شامل کریں</button>
+  </div>`;
+  if(brand){
+    const bal = calcLocalBalance(company, brand);
+    html += `<div class="balance-card">
+      <div class="meta"><b>${company}</b><br>برانڈ: ${brand}</div>
+      <div class="amount ${bal>=0?'pos':'neg'}">${fmt(bal)}</div>
+    </div>`;
+    html += `<button class="settle-btn" data-act="settle">پچھلا حساب مکمل کریں (بیلنس زیرو)</button>`;
+    html += `<button class="primary-btn" data-act="next-to-form">آگے بڑھیں — فارم بھریں ›</button>`;
+  }
+  return html;
+}
+
+function calcLocalBalance(company, brand){
+  const list = data.entries.filter(e=>e.company===company && e.brand===brand);
+  let bal = 0;
+  for(const e of list){
+    if(e.type==='settlement'){ bal = 0; continue; }
+    if(e.type==='bag') bal += parseFloat(e.weight||0);
+    if(e.type==='roll') bal -= parseFloat(e.rollsWeight||0);
+  }
+  return bal;
+}
+
+function renderForm(){
+  const company = state.company, brand = state.brand;
+  const bal = calcLocalBalance(company, brand);
+  let html = `<div class="balance-card">
+    <div class="meta"><b>${company}</b><br>برانڈ: ${brand}</div>
+    <div class="amount ${bal>=0?'pos':'neg'}">${fmt(bal)}</div>
+  </div>`;
+  if(formDraft.date===undefined) formDraft.date = todayStr();
+  if(state.kind==='bag'){
+    html += `<div class="form-grid">
+      ${field('date','تاریخ','date','full')}
+      ${field('gatePassNo','گیٹ پاس نمبر')}
+      ${field('copyNo','کاپی نمبر')}
+      ${field('bagsCount','بوروں کی تعداد','number',"min='0'")}
+      ${field('weight','بوروں کا وزن','number',"min='0' step='0.01'")}
+      ${field('driverName','ڈرائیور کا نام')}
+      ${field('vehicleNo','گاڑی نمبر')}
+      ${field('enteredBy','اینٹری کرنے والے کا نام','text','full')}
+    </div>
+    <button class="primary-btn" data-act="preview-bag">رسید دیکھیں</button>`;
+  } else {
+    html += `<div class="form-grid">
+      ${field('date','تاریخ','date','full')}
+      ${field('outGatePassNo','روانگی پاس نمبر')}
+      ${field('copyNo','کاپی نمبر')}
+      ${field('rollsCount','گولوں کی تعداد','number',"min='0'")}
+      ${field('rollsWeight','گولوں کا وزن','number',"min='0' step='0.01'")}
+      ${field('driverName','ڈرائیور کا نام')}
+      ${field('vehicleNo','گاڑی نمبر')}
+      ${field('plantName','پلانٹ کا نام')}
+      ${field('enteredBy','اینٹری کرنے والے کا نام')}
+    </div>
+    <button class="primary-btn" data-act="preview-roll">رسید دیکھیں</button>`;
+  }
+  return html;
+}
+
+function field(id, label, type='text', extra=''){
+  const err = fieldErrors[id];
+  const isFull = extra.includes('full');
+  const cleanExtra = extra.replace('full','').trim();
+  return `<div class="field ${isFull?'full':''}">
+    <label>${label} <span class="req">*</span></label>
+    <input class="${err?'err':''}" id="f_${id}" type="${type}" value="${escAttr(formDraft[id]||'')}" ${cleanExtra}>
+    ${err?`<div class="errmsg">یہ خانہ لازمی ہے</div>`:''}
+  </div>`;
+}
+/* ===================== Records — کمپنی ===================== */
+function renderRecordsCompanies(){
+  let html = `<div class="search-box"><input id="recSearch" placeholder="کمپنی تلاش کریں" value="${formDraft.recSearch||''}"></div>`;
+  const q=(formDraft.recSearch||'').trim();
+  const list = data.companies.filter(c=>!q||c.includes(q));
+  if(list.length === 0){
+    html += `<div class="empty-state">کوئی کمپنی موجود نہیں</div>`;
+  } else {
+    html += `<div class="sel-grid">`;
+    list.forEach(c=>{
+      html += `<button class="sel-btn" data-act="rec-open-company" data-name="${escAttr(c)}">${c}</button>`;
+    });
+    html += `</div>`;
+  }
+  return html;
+}
+
+function renderRecordsBrandType(){
+  const company = state.company;
+  const companyBrands = brandsFor(company);
+  let html = `<div class="section-title">کمپنی: ${company}</div>`;
+  html += `<div class="section-title">برانڈ منتخب کریں</div>`;
+  if(companyBrands.length === 0){
+    html += `<div class="empty-state">اس کمپنی کا کوئی برانڈ نہیں</div>`;
+  } else {
+    html += `<div class="sel-grid">`;
+    companyBrands.forEach(b=>{
+      html += `<button class="sel-btn" data-act="rec-open-brand" data-name="${escAttr(b)}">${b}</button>`;
+    });
+    html += `</div>`;
+  }
+  return html;
+}
+
+function renderRecordsTable(){
+  const company = state.company;
+  const brand = state.brand;
+  const type = state.viewType;
+  if(!type){
+    let html = `<div class="section-title">${company} — ${brand}</div>`;
+    html += `<div class="section-title">کیا دیکھنا چاہتے ہیں؟</div>`;
+    html += `<div class="btn-grid">
+      <button class="type-btn bag" data-act="set-view-type" data-type="bag">
+        <span class="emoji">📥</span><span>بوروں کی اینٹری</span>
+      </button>
+      <button class="type-btn roll" data-act="set-view-type" data-type="roll">
+        <span class="emoji">📤</span><span>گولوں کی اینٹری</span>
+      </button>
+    </div>`;
+    return html;
+  }
+  if(state.loadingData){
+    return `<div class="loading-box"><div class="spinner"></div><div>ڈیٹا لوڈ ہو رہا ہے...</div></div>`;
+  }
+  const entries = (state.brandEntries || []).filter(e => e.type === type);
+  let html = `<div class="table-header">
+    <div class="info">${company} — ${brand}</div>
+    ${entries.length > 0 ? `<button class="save-btn" data-act="save-table">📥 محفوظ کریں</button>` : ''}
+  </div>`;
+  html += `<div class="section-title">${type==='bag' ? '📥 بوروں کی اینٹری' : '📤 گولوں کی اینٹری'} (${entries.length})</div>`;
+  if(entries.length === 0){
+    html += `<div class="empty-state">اس برانڈ کا کوئی ریکارڈ نہیں</div>`;
+    html += `<button class="ghost-btn" data-act="change-type">دوسری اینٹری دیکھیں ›</button>`;
+    return html;
+  }
+  html += `<div class="records-table-wrap"><table class="records-table"><thead><tr>`;
+  if(type === 'bag'){
+    html += `<th>تاریخ</th><th>گیٹ پاس</th><th>تعداد</th><th>وزن</th><th>بیلنس</th>`;
+  } else {
+    html += `<th>تاریخ</th><th>روانگی پاس</th><th>تعداد</th><th>وزن</th><th>بیلنس</th>`;
+  }
+  html += `</tr></thead><tbody>`;
+  entries.forEach((e, idx) => {
+    const bal = parseFloat(e.balance || 0);
+    const balClass = bal >= 0 ? 'pos' : 'neg';
+    const passNo = type === 'bag' ? (e.gatePassNo || '-') : (e.outGatePassNo || '-');
+    const count = type === 'bag' ? (e.bagsCount || '-') : (e.rollsCount || '-');
+    const weight = type === 'bag' ? (e.weight || '-') : (e.rollsWeight || '-');
+    html += `<tr data-act="row-longpress" data-idx="${idx}">
+      <td>${e.date || '-'}</td>
+      <td>${passNo}</td>
+      <td>${count}</td>
+      <td>${weight}</td>
+      <td class="balance ${balClass}">${fmt(bal)}</td>
+    </tr>`;
+  });
+  html += `</tbody></table></div>`;
+  html += `<button class="ghost-btn" data-act="change-type" style="margin-top:14px;">دوسری اینٹری دیکھیں ›</button>`;
+  return html;
+}
+
+/* ===================== Entry Options Popup ===================== */
+function renderEntryOptions(){
+  const entry = state.selectedEntry;
+  if(!entry) return;
+  const html = `
+  <div class="overlay" id="entryOptionsOverlay">
+    <div class="sheet-popup">
+      <div class="sheet-title">کیا کرنا چاہتے ہیں؟</div>
+      <button class="popup-btn edit" data-act="do-edit">✏️ ترمیم کریں</button>
+      <button class="popup-btn delete" data-act="do-delete">🗑️ حذف کریں</button>
+      <button class="popup-btn cancel" data-act="close-options">❌ بند کریں</button>
+    </div>
+  </div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', html);
+  document.querySelectorAll('#entryOptionsOverlay [data-act]').forEach(el=>{
+    el.addEventListener('click', onAction);
+  });
+}
+
+/* ===================== Edit Flow ===================== */
+function renderEditConfirm(){
+  const html = `
+  <div class="overlay" id="editFlowOverlay">
+    <div class="sheet-popup">
+      <div class="sheet-title">کیا آپ واقعی ترمیم کرنا چاہتے ہیں؟</div>
+      <button class="popup-btn edit" data-act="edit-confirm-yes">✅ ہاں، ترمیم کرنا چاہتا ہوں</button>
+      <button class="popup-btn cancel" data-act="close-options">❌ نہیں</button>
+    </div>
+  </div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', html);
+  document.querySelectorAll('#editFlowOverlay [data-act]').forEach(el=>{
+    el.addEventListener('click', onAction);
+  });
+}
+
+function renderEditNameInput(){
+  const html = `
+  <div class="overlay" id="editFlowOverlay">
+    <div class="sheet-popup">
+      <div class="sheet-title">اپنا نام لکھیں</div>
+      <div class="field">
+        <input id="editUserName" type="text" placeholder="آپ کا نام">
+      </div>
+      <button class="primary-btn" data-act="edit-name-submit">آگے بڑھیں</button>
+      <button class="popup-btn cancel" data-act="close-options" style="margin-top:10px;">❌ بند کریں</button>
+    </div>
+  </div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', html);
+  document.querySelectorAll('#editFlowOverlay [data-act]').forEach(el=>{
+    el.addEventListener('click', onAction);
+  });
+}
+
+function renderEditWarning(){
+  const html = `
+  <div class="overlay" id="editFlowOverlay">
+    <div class="sheet-popup">
+      <div class="sheet-title">توجہ فرمائیں</div>
+      <div class="info-msg">
+        آپ یہ اینٹری تبدیل کرنے لگے ہیں۔<br><br>
+        آپ کی پچھلی اینٹری بھی ہمارے پاس موجود ہے۔<br><br>
+        جو اینٹری آپ ابھی تبدیل کر رہے ہو، وہ بھی ہمارے پاس محفوظ ہو جائے گی۔<br><br>
+        اگر کبھی ضرورت پڑے تو یہ پرانی اینٹری بھی مل سکے گی۔<br><br>
+        براہِ کرم غور سے کام کریں۔
+      </div>
+      <button class="primary-btn" data-act="edit-warning-ok">ٹھیک ہے، آگے بڑھیں</button>
+      <button class="popup-btn cancel" data-act="close-options" style="margin-top:10px;">❌ بند کریں</button>
+    </div>
+  </div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', html);
+  document.querySelectorAll('#editFlowOverlay [data-act]').forEach(el=>{
+    el.addEventListener('click', onAction);
+  });
+}
+
+/* ===================== Delete Flow ===================== */
+function renderDeleteConfirm(){
+  const html = `
+  <div class="overlay" id="deleteFlowOverlay">
+    <div class="sheet-popup">
+      <div class="sheet-title">کیا آپ واقعی حذف کرنا چاہتے ہیں؟</div>
+      <button class="popup-btn delete" data-act="delete-confirm-yes">✅ ہاں، حذف کرنا چاہتا ہوں</button>
+      <button class="popup-btn cancel" data-act="close-options">❌ نہیں</button>
+    </div>
+  </div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', html);
+  document.querySelectorAll('#deleteFlowOverlay [data-act]').forEach(el=>{
+    el.addEventListener('click', onAction);
+  });
+}
+
+function renderDeleteNameInput(){
+  const html = `
+  <div class="overlay" id="deleteFlowOverlay">
+    <div class="sheet-popup">
+      <div class="sheet-title">اپنا نام لکھیں</div>
+      <div class="field">
+        <input id="deleteUserName" type="text" placeholder="آپ کا نام">
+      </div>
+      <button class="primary-btn" data-act="delete-name-submit">آگے بڑھیں</button>
+      <button class="popup-btn cancel" data-act="close-options" style="margin-top:10px;">❌ بند کریں</button>
+    </div>
+  </div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', html);
+  document.querySelectorAll('#deleteFlowOverlay [data-act]').forEach(el=>{
+    el.addEventListener('click', onAction);
+  });
+}
+
+function renderDeleteWarning(){
+  const html = `
+  <div class="overlay" id="deleteFlowOverlay">
+    <div class="sheet-popup">
+      <div class="sheet-title">توجہ فرمائیں</div>
+      <div class="info-msg">
+        آپ یہ اینٹری ڈیلیٹ کرنے لگے ہیں۔<br><br>
+        جو اینٹری آپ نے ڈیلیٹ کی ہے، وہ ہمارے پاس موجود ہے۔<br><br>
+        آپ کی یہ اینٹری ہم نے محفوظ کر لی ہے۔<br><br>
+        اگر کبھی ضرورت پڑے تو یہ اینٹری دوبارہ مل سکے گی۔<br><br>
+        اچھی طرح سوچ لیں، پھر ڈیلیٹ کریں۔
+      </div>
+      <button class="primary-btn" data-act="delete-warning-ok" style="background:#B23A2E;">ٹھیک ہے، ڈیلیٹ کریں</button>
+      <button class="popup-btn cancel" data-act="close-options" style="margin-top:10px;">❌ بند کریں</button>
+    </div>
+  </div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', html);
+  document.querySelectorAll('#deleteFlowOverlay [data-act]').forEach(el=>{
+    el.addEventListener('click', onAction);
+  });
+}
+
+/* ===================== Receipt Overlay ===================== */
+function renderReceiptOverlay(entry){
+  const isBag = entry.type==='bag';
+  const bal = entry._balanceAfter || 0;
+  let rows='';
+  rows += `<div class="receipt-row"><span class="k">کمپنی</span><span class="v">${entry.company}</span></div>`;
+  rows += `<div class="receipt-row"><span class="k">برانڈ</span><span class="v">${entry.brand}</span></div>`;
+  rows += `<div class="receipt-row"><span class="k">تاریخ</span><span class="v">${entry.date}</span></div>`;
+  if(isBag){
+    rows += `<div class="receipt-row"><span class="k">گیٹ پاس نمبر</span><span class="v">${entry.gatePassNo}</span></div>`;
+    rows += `<div class="receipt-row"><span class="k">بوروں کی تعداد</span><span class="v">${entry.bagsCount}</span></div>`;
+    rows += `<div class="receipt-row"><span class="k">بوروں کا وزن</span><span class="v">${entry.weight}</span></div>`;
+  } else {
+    rows += `<div class="receipt-row"><span class="k">روانگی پاس نمبر</span><span class="v">${entry.outGatePassNo}</span></div>`;
+    rows += `<div class="receipt-row"><span class="k">گولوں کی تعداد</span><span class="v">${entry.rollsCount}</span></div>`;
+    rows += `<div class="receipt-row"><span class="k">گولوں کا وزن</span><span class="v">${entry.rollsWeight}</span></div>`;
+    rows += `<div class="receipt-row"><span class="k">پلانٹ کا نام</span><span class="v">${entry.plantName}</span></div>`;
+  }
+  rows += `<div class="receipt-row"><span class="k">ڈرائیور کا نام</span><span class="v">${entry.driverName}</span></div>`;
+  rows += `<div class="receipt-row"><span class="k">گاڑی نمبر</span><span class="v">${entry.vehicleNo}</span></div>`;
+  rows += `<div class="receipt-row"><span class="k">کاپی نمبر</span><span class="v">${entry.copyNo}</span></div>`;
+  rows += `<div class="receipt-row"><span class="k">اینٹری کرنے والا</span><span class="v">${entry.enteredBy}</span></div>`;
+  const overlayHtml = `
+  <div class="overlay" id="receiptOverlay">
+    <div class="receipt-sheet">
+      <div class="receipt-head">
+        ${svgLogo(40)}
+        <div class="app-sub">فیکٹری اسٹاک مینجمنٹ پورٹل</div>
+        <div class="kind">${isBag?'بوروں کی رسید':'گولوں کی رسید'}</div>
+      </div>
+      <div class="receipt-divider"></div>
+      ${rows}
+      <div class="receipt-divider"></div>
+      <div class="receipt-balance">
+        <div class="lbl">نیا بیلنس</div>
+        <div class="val" style="color:${bal>=0?'#1E7D4B':'#B23A2E'}">${fmt(bal)}</div>
+      </div>
+      ${state.confirmMode ? `
+        <button class="primary-btn" data-act="confirm-save">تصدیق کریں اور محفوظ کریں</button>
+        <button class="ghost-btn" data-act="edit-entry">ترمیم کریں</button>
+      ` : `<button class="ghost-btn" data-act="close-receipt">بند کریں</button>`}
+    </div>
+  </div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', overlayHtml);
+  document.querySelectorAll('#receiptOverlay [data-act]').forEach(el=>{
+    el.addEventListener('click', onAction);
+  });
+}
+
+function validate(fields){
+  fieldErrors = {};
+  let ok = true;
+  fields.forEach(id=>{
+    const el = document.getElementById('f_'+id);
+    const val = el ? el.value : formDraft[id];
+    if(val===undefined || val===null || String(val).trim()===''){ fieldErrors[id]=true; ok=false; }
+    else formDraft[id]=val;
+  });
+  return ok;
+}
+
+function collectFormValues(ids){
+  ids.forEach(id=>{
+    const el = document.getElementById('f_'+id);
+    if(el) formDraft[id]=el.value;
+  });
+}
+
+function attachHandlers(){
+  document.querySelectorAll('[data-act]').forEach(el=>{
+    if(el.getAttribute('data-act') === 'row-longpress') return;
+    el.addEventListener('click', onAction);
+  });
+  document.querySelectorAll('[data-act="row-longpress"]').forEach(row=>{
+    row.addEventListener('touchstart', onRowTouchStart, {passive:true});
+    row.addEventListener('touchend', cancelLongPress);
+    row.addEventListener('touchmove', cancelLongPress);
+    row.addEventListener('touchcancel', cancelLongPress);
+    row.addEventListener('mousedown', onRowTouchStart);
+    row.addEventListener('mouseup', cancelLongPress);
+    row.addEventListener('mouseleave', cancelLongPress);
+  });
+  const cs = document.getElementById('companySearch');
+  if(cs) cs.addEventListener('input', e=>{ formDraft.companySearch=e.target.value; renderKeepFocus('companySearch'); });
+  const rs = document.getElementById('recSearch');
+  if(rs) rs.addEventListener('input', e=>{ formDraft.recSearch=e.target.value; renderKeepFocus('recSearch'); });
+}
+
+function onRowTouchStart(e){
+  const row = e.currentTarget;
+  const idx = parseInt(row.getAttribute('data-idx'), 10);
+  const type = state.viewType;
+  const entries = (state.brandEntries || []).filter(e => e.type === type);
+  const entry = entries[idx];
+  if(!entry) return;
+  longPressTimer = setTimeout(()=>{
+    if(navigator.vibrate) navigator.vibrate(50);
+    showEntryOptions(entry);
+  }, 600);
+  row.addEventListener('touchend', ()=>{ clearTimeout(longPressTimer); }, {once:true});
+  row.addEventListener('touchmove', ()=>{ clearTimeout(longPressTimer); }, {once:true});
+}
+
+function showEntryOptions(entry){
+  state.selectedEntry = entry;
+  state.showEntryOptions = true;
+  render();
+}
+
+function renderKeepFocus(id){
+  const el0 = document.getElementById(id);
+  if(!el0) return;
+  const val = el0.value;
+  const pos = el0.selectionStart;
+  render();
+  const el = document.getElementById(id);
+  if(el){ el.focus(); el.setSelectionRange(pos,pos); }
+}
+async function onAction(e){
+  const el = e.currentTarget;
+  const act = el.getAttribute('data-act');
+
+  if(act==='install'){
+    if(deferredPrompt){ deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; render(); }
+    return;
+  }
+  if(act==='unlock'){
+    const val = document.getElementById('lockPass').value;
+    if(val === (data.settings && data.settings.password)){ unlocked = true; fieldErrors = {}; render(); }
+    else { fieldErrors.lock = true; render(); }
+    return;
+  }
+  if(act==='change-password'){
+    const current = prompt('موجودہ پاس ورڈ درج کریں:');
+    if(current===null) return;
+    if(current !== data.settings.password){ alert('موجودہ پاس ورڈ غلط ہے'); return; }
+    const next = prompt('نیا پاس ورڈ درج کریں:');
+    if(!next) return;
+    data.settings.password = next;
+    await persist();
+    alert('پاس ورڈ تبدیل ہو گیا');
+    return;
+  }
+  if(act==='back'){
+    const s = state.screen;
+    if(s==='pick-company') go('home');
+    else if(s==='pick-brand') go('pick-company', {kind:state.kind});
+    else if(s==='form') go('pick-brand', {kind:state.kind, company:state.company});
+    else if(s==='records') go('home');
+    else if(s==='records-brand-type') go('records');
+    else if(s==='records-brand') go('records-brand-type', {company:state.company});
+    return;
+  }
+  if(act==='go-entry'){ go('pick-company', {kind: el.getAttribute('data-kind')}); return; }
+  if(act==='go-records'){ go('records'); return; }
+  if(act==='pick-company'){ state.company = el.getAttribute('data-name'); render(); return; }
+  if(act==='add-company'){
+    const inp = document.getElementById('newCompanyName');
+    const name = inp.value.trim();
+    if(!name){ showToast('کمپنی کا نام لکھیں'); return; }
+    if(!data.companies.includes(name)) data.companies.push(name);
+    if(!data.brands[name]) data.brands[name] = [];
+    state.company = name;
+    await persist();
+    showToast('کمپنی شامل ہو گئی');
+    render();
+    return;
+  }
+  if(act==='next-to-brand'){
+    if(!state.company){ showToast('پہلے کمپنی منتخب کریں'); return; }
+    go('pick-brand', {kind:state.kind, company:state.company});
+    return;
+  }
+  if(act==='pick-brand'){ state.brand = el.getAttribute('data-name'); render(); return; }
+  if(act==='add-brand'){
+    const inp = document.getElementById('newBrandName');
+    const name = inp.value.trim();
+    if(!name){ showToast('برانڈ کا نام لکھیں'); return; }
+    const added = await addBrandToCompany(state.company, name);
+    if(added){ state.brand = name; showToast('برانڈ شامل ہو گیا'); }
+    else { showToast('یہ برانڈ پہلے سے موجود ہے'); }
+    render();
+    return;
+  }
+  if(act==='next-to-form'){
+    if(!state.company || !state.brand){ showToast('کمپنی اور برانڈ منتخب کریں'); return; }
+    go('form', {kind:state.kind, company:state.company, brand:state.brand});
+    return;
+  }
+  if(act==='settle'){
+    const entry = {
+      id: uid(),
+      type: 'settlement',
+      company: state.company,
+      brand: state.brand,
+      date: todayStr()
+    };
+    data.entries.push(entry);
+    await persist();
+    showToast('بیلنس زیرو ہو گیا');
+    render();
+    const result = await sendToSheet(entry);
+    if(result.status!=='ok'){ showToast('مقامی طور پر محفوظ ہوا، مگر گوگل شیٹ تک نہیں پہنچا'); }
+    return;
+  }
+  if(act==='preview-bag' || act==='preview-roll'){
+    const isBag = act==='preview-bag';
+    const fields = isBag
+      ? ['date','gatePassNo','copyNo','bagsCount','weight','driverName','vehicleNo','enteredBy']
+      : ['date','outGatePassNo','copyNo','rollsCount','rollsWeight','driverName','vehicleNo','plantName','enteredBy'];
+    if(!validate(fields)){ showToast('براہ کرم تمام ضروری خانے پُر کریں'); render(); return; }
+    collectFormValues(fields);
+    const bal = calcLocalBalance(state.company, state.brand);
+    const balanceAfter = isBag ? bal + parseFloat(formDraft.weight||0) : bal - parseFloat(formDraft.rollsWeight||0);
+    const entry = {
+      id: uid(),
+      type: isBag ? 'bag' : 'roll',
+      company: state.company,
+      brand: state.brand,
+      _balanceAfter: balanceAfter
+    };
+    fields.forEach(id=>{ entry[id] = formDraft[id]; });
+    state.preview = entry;
+    state.confirmMode = true;
+    render();
+    return;
+  }
+  if(act==='confirm-save'){
+    const entry = {...state.preview};
+    delete entry._balanceAfter;
+    data.entries.push(entry);
+    await persist();
+    state.preview=null;
+    state.confirmMode=false;
+    formDraft = {};
+    fieldErrors = {};
+    go('pick-company', {kind:state.kind});
+    showToast('محفوظ ہو رہا ہے...');
+    const result = await sendToSheet(entry);
+    if(result.status==='ok'){
+      showToast('اندراج محفوظ ہو گیا اور گوگل شیٹ میں بھیج دیا گیا');
+    } else {
+      showToast('اندراج مقامی طور پر محفوظ ہوا، مگر گوگل شیٹ تک نہیں پہنچا');
+    }
+    return;
+  }
+  if(act==='edit-entry'){ state.preview=null; state.confirmMode=false; render(); return; }
+  if(act==='close-receipt'){ state.preview=null; state.confirmMode=false; render(); return; }
+  if(act==='rec-open-company'){ go('records-brand-type', {company: el.getAttribute('data-name')}); return; }
+  if(act==='rec-open-brand'){
+    const brand = el.getAttribute('data-name');
+    go('records-brand', {company: state.company, brand: brand, viewType: null, brandEntries: []});
+    return;
+  }
+  if(act==='set-view-type'){
+    const type = el.getAttribute('data-type');
+    state.viewType = type;
+    state.loadingData = true;
+    render();
+    const entries = await syncBrandData(state.company, state.brand);
+    state.brandEntries = entries;
+    state.loadingData = false;
+    render();
+    return;
+  }
+  if(act==='change-type'){
+    state.viewType = null;
+    state.brandEntries = [];
+    render();
+    return;
+  }
+  if(act==='close-options'){
+    state.showEntryOptions = false;
+    state.selectedEntry = null;
+    state.editStep = null;
+    state.deleteStep = null;
+    render();
+    return;
+  }
+  if(act==='do-edit'){
+    state.showEntryOptions = false;
+    state.editStep = 'confirm';
+    render();
+    renderEditConfirm();
+    return;
+  }
+  if(act==='edit-confirm-yes'){
+    state.editStep = 'name';
+    removeOverlay('editFlowOverlay');
+    renderEditNameInput();
+    return;
+  }
+  if(act==='edit-name-submit'){
+    const name = document.getElementById('editUserName').value.trim();
+    if(!name){ showToast('اپنا نام لکھیں'); return; }
+    state.editUserName = name;
+    state.editStep = 'warning';
+    removeOverlay('editFlowOverlay');
+    renderEditWarning();
+    return;
+  }
+  if(act==='edit-warning-ok'){
+    await performEdit();
+    return;
+  }
+  if(act==='do-delete'){
+    state.showEntryOptions = false;
+    state.deleteStep = 'confirm';
+    render();
+    renderDeleteConfirm();
+    return;
+  }
+  if(act==='delete-confirm-yes'){
+    state.deleteStep = 'name';
+    removeOverlay('deleteFlowOverlay');
+    renderDeleteNameInput();
+    return;
+  }
+  if(act==='delete-name-submit'){
+    const name = document.getElementById('deleteUserName').value.trim();
+    if(!name){ showToast('اپنا نام لکھیں'); return; }
+    state.deleteUserName = name;
+    state.deleteStep = 'warning';
+    removeOverlay('deleteFlowOverlay');
+    renderDeleteWarning();
+    return;
+  }
+  if(act==='delete-warning-ok'){
+    await performDelete();
+    return;
+  }
+  if(act==='save-table'){
+    saveTableToMobile();
+    return;
+  }
+}
+
+function removeOverlay(id){
+  const el = document.getElementById(id);
+  if(el) el.remove();
+}
+/* ===================== ترمیم کریں (Send to Apps Script) ===================== */
+async function performEdit(){
+  const entry = state.selectedEntry;
+  const name = state.editUserName;
+  removeOverlay('editFlowOverlay');
+  showToast('ترمیم بھیجی جا رہی ہے...');
+  const result = await sendToSheet({
+    action: 'update',
+    company: state.company,
+    brand: state.brand,
+    type: entry.type,
+    entryId: entry.id,
+    userName: name,
+    oldData: entry,
+    newData: entry
+  });
+  state.showEntryOptions = false;
+  state.selectedEntry = null;
+  state.editStep = null;
+  if(result.status === 'ok'){ showToast('✅ اینٹری ترمیم ہو گئی'); }
+  else { showToast('❌ ترمیم نہیں ہو سکی'); }
+  state.viewType = entry.type;
+  state.loadingData = true;
+  render();
+  const entries = await syncBrandData(state.company, state.brand);
+  state.brandEntries = entries;
+  state.loadingData = false;
+  render();
+}
+
+/* ===================== حذف کریں (Send to Apps Script) ===================== */
+async function performDelete(){
+  const entry = state.selectedEntry;
+  const name = state.deleteUserName;
+  removeOverlay('deleteFlowOverlay');
+  showToast('حذف بھیجا جا رہا ہے...');
+  const result = await sendToSheet({
+    action: 'delete',
+    company: state.company,
+    brand: state.brand,
+    type: entry.type,
+    entryId: entry.id,
+    userName: name,
+    oldData: entry
+  });
+  state.showEntryOptions = false;
+  state.selectedEntry = null;
+  state.deleteStep = null;
+  if(result.status === 'ok'){ showToast('✅ اینٹری حذف ہو گئی'); }
+  else { showToast('❌ حذف نہیں ہو سکی'); }
+  state.viewType = entry.type;
+  state.loadingData = true;
+  render();
+  const entries = await syncBrandData(state.company, state.brand);
+  state.brandEntries = entries;
+  state.loadingData = false;
+  render();
+}
+
+/* ===================== ٹیبل محفوظ کریں (PDF ڈاؤن لوڈ) ===================== */
+async function saveTableToMobile(){
+  const table = document.querySelector('.records-table');
+  if(!table){ showToast('ٹیبل نہیں ملا'); return; }
+
+  const headerTitle = `${state.company} — ${state.brand}`;
+  const kindTitle = state.viewType === 'bag' ? 'بوروں کی اینٹری' : 'گولوں کی اینٹری';
+  const now = new Date().toLocaleString('en-GB', {timeZone: 'Asia/Karachi'});
+  const fileSafe = (s)=> String(s||'').replace(/[^a-zA-Z0-9\u0600-\u06FF_-]+/g,'_');
+  const fileName = `Ismail_${fileSafe(state.company)}_${fileSafe(state.brand)}.pdf`;
+
+  // اگر PDF لائبریریاں دستیاب نہ ہوں (انٹرنیٹ نہ ہو) تو پرانا پرنٹ طریقہ استعمال کریں
+  const jsPDFLib = window.jspdf && window.jspdf.jsPDF;
+  if(!jsPDFLib || !window.html2canvas){
+    fallbackPrint(table, headerTitle, kindTitle, now);
+    return;
+  }
+
+  showToast('📄 PDF بن رہا ہے...');
+
+  // پرنٹ کے لیے ایک عارضی، اسکرین سے باہر کنٹینر بنائیں تاکہ رنگ/فونٹ صحیح آئیں
+  const wrap = document.createElement('div');
+  wrap.style.position='fixed';
+  wrap.style.left='-9999px';
+  wrap.style.top='0';
+  wrap.style.width='700px';
+  wrap.style.background='#fff';
+  wrap.style.padding='24px';
+  wrap.style.direction='rtl';
+  wrap.style.fontFamily = "'Noto Naskh Arabic','Segoe UI',serif";
+  wrap.innerHTML = `
+    <h2 style="color:#10294D;text-align:center;margin:0 0 4px;">ISMAIL — فیکٹری اسٹاک مینجمنٹ</h2>
+    <div style="text-align:center;color:#767267;font-size:13px;margin-bottom:18px;">${headerTitle} — ${kindTitle}</div>
+    ${table.outerHTML}
+    <div style="margin-top:18px;text-align:center;color:#767267;font-size:12px;">وقت: ${now}</div>
+  `;
+  const tbl = wrap.querySelector('table');
+  if(tbl){
+    tbl.style.width='100%';
+    tbl.style.borderCollapse='collapse';
+    tbl.style.fontSize='14px';
+    tbl.querySelectorAll('th').forEach(th=>{ th.style.background='#10294D'; th.style.color='#fff'; th.style.padding='10px 8px'; th.style.textAlign='right'; });
+    tbl.querySelectorAll('td').forEach(td=>{ td.style.padding='10px 8px'; td.style.borderBottom='1px solid #E4E1D6'; td.style.textAlign='right'; });
+    tbl.querySelectorAll('.pos').forEach(e=>{ e.style.color='#1E7D4B'; e.style.fontWeight='700'; });
+    tbl.querySelectorAll('.neg').forEach(e=>{ e.style.color='#B23A2E'; e.style.fontWeight='700'; });
+  }
+  document.body.appendChild(wrap);
+
+  try{
+    const canvas = await window.html2canvas(wrap, {scale:2, backgroundColor:'#ffffff'});
+    document.body.removeChild(wrap);
+
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDFLib('p','pt','a4');
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const margin = 24;
+    const imgW = pageW - margin*2;
+    const imgH = imgW * canvas.height / canvas.width;
+
+    let heightLeft = imgH;
+    let position = margin;
+    pdf.addImage(imgData, 'PNG', margin, position, imgW, imgH);
+    heightLeft -= (pageH - margin*2);
+
+    while(heightLeft > 0){
+      position = heightLeft - imgH + margin;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', margin, position, imgW, imgH);
+      heightLeft -= (pageH - margin*2);
+    }
+
+    pdf.save(fileName);
+    showToast('✅ PDF ڈاؤن لوڈ ہو گئی');
+  }catch(err){
+    if(wrap.parentNode) document.body.removeChild(wrap);
+    console.log('PDF error', err);
+    showToast('❌ PDF نہیں بن سکی، پرنٹ کھول رہے ہیں');
+    fallbackPrint(table, headerTitle, kindTitle, now);
+  }
+}
+
+function fallbackPrint(table, headerTitle, kindTitle, now){
+  const style = `
+    <style>
+      body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;direction:rtl;padding:20px;background:#fff;}
+      h2{color:#10294D;text-align:center;margin-bottom:6px;}
+      .sub{text-align:center;color:#767267;font-size:13px;margin-bottom:20px;}
+      table{width:100%;border-collapse:collapse;font-size:14px;}
+      th{background:#10294D;color:#fff;padding:10px 8px;text-align:right;}
+      td{padding:10px 8px;border-bottom:1px solid #E4E1D6;text-align:right;}
+      .pos{color:#1E7D4B;font-weight:700;}
+      .neg{color:#B23A2E;font-weight:700;}
+      .footer{margin-top:20px;text-align:center;color:#767267;font-size:12px;}
+    </style>
+  `;
+  const htmlContent = `<!DOCTYPE html><html dir="rtl" lang="ur"><head><meta charset="UTF-8">${style}</head>
+<body><h2>ISMAIL — فیکٹری اسٹاک مینجمنٹ</h2>
+<div class="sub">${headerTitle} — ${kindTitle}</div>
+${table.outerHTML}
+<div class="footer">وقت: ${now}</div></body></html>`;
+  const w = window.open('', '_blank');
+  if(!w){ showToast('براؤزر نے window نہیں کھولی'); return; }
+  w.document.write(htmlContent);
+  w.document.close();
+  showToast('📥 براؤزر میں کھل گیا — Print/Save کریں');
+  setTimeout(()=>{ try{ w.focus(); w.print(); }catch(e){} }, 800);
+}
+
+/* ===================== PWA Setup ===================== */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(err=>console.log('SW fail', err));
+  });
+}
+window.addEventListener('beforeinstallprompt', (e)=>{
+  e.preventDefault();
+  deferredPrompt = e;
+  render();
+});
+window.addEventListener('appinstalled', ()=>{ deferredPrompt=null; showToast('ایپ انسٹال ہو گئی'); });
+
+/* ===================== Start ===================== */
+loadData();
+</script>
+</body>
+</html>
