@@ -1066,9 +1066,11 @@ async function onAction(e){
     return;
   }
   if(act==='next-to-form'){
-    if(!state.company || !state.brand){ showToast('کمپنی اور برانڈ منتخب کریں'); return; }
-    go('form', {kind:state.kind, company:state.company, brand:state.brand});
-  if(act==='confirm-save'){
+  if(!state.company || !state.brand){ showToast('کمپنی اور برانڈ منتخب کریں'); return; }
+  go('form', {kind:state.kind, company:state.company, brand:state.brand});
+  return;
+}
+if(act==='confirm-save'){
     const entry = {...state.preview};
     delete entry._balanceAfter;
     data.entries.push(entry);
