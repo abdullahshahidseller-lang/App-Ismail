@@ -46,7 +46,7 @@ export default async function handler(req, res) {
     }
 
     // ✅ نیا Apps Script URL
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyPZip5I6F4j8r49oyxYu30LFiafImEcYYhRXBKvrGP2lctpYbWcTwXupgb3XcUg85G0Q/exec';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxT5B6rh1lBlb-ufY8ZiYqeyuzUSaiB85qXur8GVJOWDI3aoWYQMtpEZnjjGey2m3QD/exec';
 
     // Apps Script کو بھیجیں
     const response = await fetch(APPS_SCRIPT_URL, {
