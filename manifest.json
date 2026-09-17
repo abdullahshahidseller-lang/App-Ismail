@@ -1,9 +1,10 @@
+
 {
   "name": "Ismail — فیکٹری اسٹاک مینجمنٹ",
   "short_name": "Ismail",
   "description": "فیکٹری اسٹاک مینجمنٹ پورٹل",
-  "start_url": "./index.html",
-  "scope": "./",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#FAF9F6",
