@@ -1,35 +1,26 @@
-export default async function handler(req, res) {
+// Cloudflare Pages Function
+export async function onRequestPost(context) {
+  const { request } = context;
+
   // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Preflight
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  if (req.method !== 'POST') {
-    return res.status(405).json({ status: 'error', message: 'Method not allowed' });
-  }
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
 
   try {
     // Body دستی پڑھیں
-    let bodyData = '';
-    
-    await new Promise((resolve, reject) => {
-      req.on('data', chunk => {
-        bodyData += chunk.toString();
-      });
-      req.on('end', () => resolve());
-      req.on('error', reject);
-    });
+    const bodyData = await request.text();
 
     if (!bodyData || bodyData.trim() === '') {
       console.error('Empty body received');
-      return res.status(400).json({ 
-        status: 'error', 
-        message: 'Empty request body' 
+      return new Response(JSON.stringify({
+        status: 'error',
+        message: 'Empty request body'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
       });
     }
 
@@ -39,9 +30,12 @@ export default async function handler(req, res) {
       parsedBody = JSON.parse(bodyData);
     } catch (e) {
       console.error('JSON parse error:', e.message);
-      return res.status(400).json({ 
-        status: 'error', 
-        message: 'Invalid JSON: ' + e.message 
+      return new Response(JSON.stringify({
+        status: 'error',
+        message: 'Invalid JSON: ' + e.message
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
       });
     }
 
@@ -57,24 +51,46 @@ export default async function handler(req, res) {
     });
 
     const responseText = await response.text();
-    
+
     let result;
     try {
       result = JSON.parse(responseText);
     } catch (e) {
       console.error('Apps Script response not JSON:', responseText.substring(0, 500));
-      return res.status(500).json({ 
-        status: 'error', 
+      return new Response(JSON.stringify({
+        status: 'error',
         message: 'Apps Script returned non-JSON: ' + responseText.substring(0, 200)
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
       });
     }
 
-    return res.status(200).json(result);
+    return new Response(JSON.stringify(result), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders }
+    });
+
   } catch (err) {
     console.error('Handler error:', err);
-    return res.status(500).json({ 
-      status: 'error', 
-      message: String(err) 
+    return new Response(JSON.stringify({
+      status: 'error',
+      message: String(err)
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders }
     });
   }
+}
+
+// OPTIONS (Preflight) کے لیے
+export async function onRequestOptions(context) {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    }
+  });
 }
