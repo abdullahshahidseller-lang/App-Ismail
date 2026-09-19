@@ -2107,76 +2107,22 @@ function saveTableAsImage(){
 }
 /* ===================== بل کا ڈیش بورڈ ===================== */
 function renderBillDashboard(){
-  const bills = state.billDashboardData || null;
-  const weekBills = bills ? bills.bills || [] : [];
-  const currentBalance = bills ? bills.currentBalance || 0 : 0;
-  const weekReceived = bills ? bills.weekReceived || 0 : 0;
-  
-  /* اس ہفتے کی تاریخیں (بدھ سے بدھ) */
-  const today = nowPK();
-  const dayOfWeek = today.getDay(); /* 0 = اتوار، 3 = بدھ */
-  const daysToWed = (dayOfWeek - 3 + 7) % 7;
-  const weekStart = new Date(today);
-  weekStart.setDate(today.getDate() - daysToWed);
-  const weekEnd = new Date(weekStart);
-  weekEnd.setDate(weekStart.getDate() + 6);
-  
-  const fmtDate = (d) => {
-    const dd = String(d.getDate()).padStart(2, '0');
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    return dd + '-' + mm + '-' + d.getFullYear();
-  };
-  
-  let receivedRows = '';
-  if(weekBills.length === 0){
-    receivedRows = `<div class="empty-state" style="padding:14px;">اس ہفتے کوئی پیسے نہیں آئے</div>`;
-  } else {
-    weekBills.forEach(b => {
-      receivedRows += `<div class="dash-item">
-        <div>
-          <div class="name">${esc(b.company)}</div>
-          <div class="info">${esc(b.date)} — ${esc(b.kisMalKaBill || '')}</div>
-        </div>
-        <div class="amount">${fmt(b.diye)}</div>
-      </div>`;
-    });
-  }
-  
   return `
-    <div class="dash-section">
-      <div class="dash-title">${iconToday} اس ہفتے کا خلاصہ</div>
-      <div class="dash-row">
-        <div class="label">${iconBill} کل بل</div>
-        <div class="value">${weekBills.length}</div>
-      </div>
-      <div class="dash-row">
-        <div class="label">${iconMoney} اس ہفتے لیے</div>
-        <div class="value green">${fmt(weekReceived)}</div>
-      </div>
-      <div class="dash-row">
-        <div class="label">${iconList} کل باقی</div>
-        <div class="value ${currentBalance >= 0 ? 'red' : 'green'}">${fmt(currentBalance)}</div>
-      </div>
-      <div style="text-align:center;color:var(--muted);font-size:12px;margin-top:10px;">
-        ${fmtDate(weekStart)} سے ${fmtDate(weekEnd)} تک
-      </div>
-    </div>
-    
-    <div class="dash-section">
-      <div class="dash-title">${iconMoney} اس ہفتے کس نے پیسے دیے</div>
-      ${receivedRows}
-    </div>
-    
-    <div class="dash-section" style="padding:18px;">
-      <button class="primary-btn" data-act="go-bill-company" style="min-height:80px;font-size:18px;margin-top:0;">
-        ${iconBill} بل بنائیں
+    <div style="padding:30px 14px;">
+      <button class="primary-btn" data-act="go-bill-company" 
+              style="min-height:120px;font-size:20px;flex-direction:column;gap:14px;margin-top:0;">
+        ${iconBill}
+        <div>بل بنائیں</div>
       </button>
-      <button class="primary-btn" data-act="go-bill-list-company" style="min-height:80px;font-size:18px;background:var(--navy-2);margin-top:14px;">
-        ${iconList} بلز دیکھیں
+      <button class="primary-btn" data-act="go-bill-list-company" 
+              style="min-height:120px;font-size:20px;background:var(--navy-2);
+                     flex-direction:column;gap:14px;margin-top:24px;">
+        ${iconList}
+        <div>بلز دیکھیں</div>
       </button>
     </div>
   `;
-}
+  }
 
 /* ===================== بل — کمپنی منتخب ===================== */
 function renderBillCompany(){
