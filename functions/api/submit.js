@@ -10,7 +10,7 @@ export async function onRequestPost(context) {
   };
 
   try {
-    // Body پڑھیں
+    // Body دستی پڑھیں
     const bodyData = await request.text();
 
     if (!bodyData || bodyData.trim() === '') {
@@ -39,8 +39,8 @@ export async function onRequestPost(context) {
       });
     }
 
-    // ✅ Apps Script URL
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxT5B6rh1lBlb-ufY8ZiYqeyuzUSaiB85qXur8GVJOWDI3aoWYQMtpEZnjjGey2m3QD/exec';
+    // ✅ نیا Apps Script URL
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwMUvmWKHgutbLwtpatTeCfya0wa0v-LZfzuavYdMvfjtDsB6wXsipbRj8cyuZV1cKY5A/exec';
 
     // Apps Script کو بھیجیں
     const response = await fetch(APPS_SCRIPT_URL, {
