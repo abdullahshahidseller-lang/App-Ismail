@@ -2860,10 +2860,7 @@ async function onAction(e){
       return;
     }
     playSound('success');
-    state.billDashboardData = null;
-    state.loadingBillDashboard = true;
-    go('bill-dashboard', { loadingBillDashboard: true });
-    loadBillDashboard();
+    go('bill-dashboard');
     return;
   }
   if(act === 'bb-records'){
