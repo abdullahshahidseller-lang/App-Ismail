@@ -1,49 +1,44 @@
-// Cloudflare Pages Function
-export async function onRequestPost(context) {
-  const { request } = context;
+import { verifyToken, json, corsHeaders } from '../utils/auth.js';
 
-  // CORS headers
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-  };
+export async function onRequestPost(context) {
+  const { request, env } = context;
+  const origin = env.ALLOWED_ORIGIN || '*';
 
   try {
-    // Body دستی پڑھیں
-    const bodyData = await request.text();
-
-    if (!bodyData || bodyData.trim() === '') {
-      console.error('Empty body received');
-      return new Response(JSON.stringify({
-        status: 'error',
-        message: 'Empty request body'
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders }
-      });
+    /* ۱. ٹوکن چیک کریں */
+    const authHeader = request.headers.get('Authorization') || '';
+    const token = authHeader.replace('Bearer ', '').trim();
+    let payload;
+    try {
+      payload = await verifyToken(token, env.JWT_SECRET);
+    } catch (e) {
+      return json({ status: 'error', message: String(e.message || e) }, 401, origin);
     }
 
-    // JSON parse
+    /* ۲. صارف کی بھیجی ہوئی body پڑھیں */
+    const bodyData = await request.text();
+    if (!bodyData || bodyData.trim() === '') {
+      return json({ status: 'error', message: 'Empty request body' }, 400, origin);
+    }
     let parsedBody;
     try {
       parsedBody = JSON.parse(bodyData);
     } catch (e) {
-      console.error('JSON parse error:', e.message);
-      return new Response(JSON.stringify({
-        status: 'error',
-        message: 'Invalid JSON: ' + e.message
-      }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders }
-      });
+      return json({ status: 'error', message: 'Invalid JSON: ' + e.message }, 400, origin);
     }
 
-    // ✅ نیا Apps Script URL
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwMUvmWKHgutbLwtpatTeCfya0wa0v-LZfzuavYdMvfjtDsB6wXsipbRj8cyuZV1cKY5A/exec';
+    /* ۳. اہم: صارف کا بھیجا ہوا secret/role/verifiedName نظر انداز کریں،
+       صرف ٹوکن سے آیا ہوا نام اور کردار اصل مانا جائے گا */
+    delete parsedBody.secret;
+    delete parsedBody.role;
+    delete parsedBody.verifiedName;
+    parsedBody.secret = env.SECRET_KEY;
+    parsedBody.role = payload.role;
+    parsedBody.verifiedName = payload.name;
 
-    // Apps Script کو بھیجیں
-    const response = await fetch(APPS_SCRIPT_URL, {
+    /* ۴. Apps Script کو بھیجیں — لنک environment variable سے آتا ہے،
+       کوڈ میں کہیں نہیں لکھا */
+    const response = await fetch(env.APPS_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(parsedBody),
@@ -51,46 +46,19 @@ export async function onRequestPost(context) {
     });
 
     const responseText = await response.text();
-
     let result;
     try {
       result = JSON.parse(responseText);
     } catch (e) {
-      console.error('Apps Script response not JSON:', responseText.substring(0, 500));
-      return new Response(JSON.stringify({
-        status: 'error',
-        message: 'Apps Script returned non-JSON: ' + responseText.substring(0, 200)
-      }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders }
-      });
+      return json({ status: 'error', message: 'Apps Script returned non-JSON: ' + responseText.substring(0, 200) }, 500, origin);
     }
 
-    return new Response(JSON.stringify(result), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders }
-    });
-
+    return json(result, 200, origin);
   } catch (err) {
-    console.error('Handler error:', err);
-    return new Response(JSON.stringify({
-      status: 'error',
-      message: String(err)
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders }
-    });
+    return json({ status: 'error', message: String(err) }, 500, origin);
   }
 }
 
-// OPTIONS (Preflight) کے لیے
 export async function onRequestOptions(context) {
-  return new Response(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    }
-  });
+  return new Response(null, { status: 200, headers: corsHeaders(context.env.ALLOWED_ORIGIN || '*') });
 }
