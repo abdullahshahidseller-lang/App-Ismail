@@ -1,0 +1,2725 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#10294D">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ISMAIL KNITTING">
+<title>ISMAIL KNITTING</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+  :root{
+    --navy:#10294D;
+    --navy-2:#1B3E73;
+    --navy-soft:#EEF2F8;
+    --bg:#FAF9F6;
+    --card:#FFFFFF;
+    --border:#E4E1D6;
+    --ink:#1A1A1A;
+    --muted:#767267;
+    --green:#1E7D4B;
+    --red:#B23A2E;
+    --orange:#E67E22;
+    --purple:#8E44AD;
+    --yellow:#F1C40F;
+    --radius:16px;
+    --font-scale:1;
+    --shadow-sm:0 1px 3px rgba(16,41,77,.06);
+    --shadow-md:0 4px 14px rgba(16,41,77,.08);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Noto Naskh Arabic', 'Segoe UI', serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    font-size:calc(15px * var(--font-scale));
+  }
+  body.font-small{--font-scale:0.92;}
+  body.font-medium{--font-scale:1;}
+  body.font-large{--font-scale:1.15;}
+  #app{
+    max-width:480px;margin:0 auto;min-height:100vh;
+    background:var(--bg);position:relative;
+    padding-bottom:95px;
+  }
+
+  /* ====== Offline Banner ====== */
+  .offline-banner{
+    position:fixed;top:0;left:0;right:0;z-index:999;
+    background:#B23A2E;color:#fff;
+    padding:8px 16px;text-align:center;
+    font-size:14px;font-weight:600;
+    display:none;
+  }
+  .offline-banner.show{display:block;}
+
+  /* ====== Cache Banner ====== */
+  .cache-banner{
+    background:#FFF3CD;border:1.5px solid #F0D68A;color:#7A5B00;
+    border-radius:12px;padding:12px 14px;margin-bottom:14px;
+    font-size:13.5px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+    flex-wrap:wrap;
+  }
+  .cache-banner button{
+    background:#7A5B00;color:#fff;border:none;border-radius:8px;
+    padding:7px 12px;font-size:12.5px;font-family:inherit;font-weight:700;cursor:pointer;
+    white-space:nowrap;
+  }
+
+  /* ====== Topbar ====== */
+  .topbar{
+    background:var(--navy);
+    color:#fff;
+    padding:12px 14px;
+    position:sticky;top:0;z-index:20;
+    display:flex;align-items:center;gap:10px;
+    border-bottom:3px solid var(--navy-2);
+    min-height:66px;
+    box-shadow:var(--shadow-md);
+  }
+  .topbar-btn{
+    background:rgba(255,255,255,.12);
+    border:none;color:#fff;
+    width:44px;height:44px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;flex-shrink:0;
+    font-family:inherit;
+    transition:background .15s;
+  }
+  .topbar-btn:active{background:rgba(255,255,255,.28);}
+  .topbar-btn .material-icons-round{
+    font-size:26px;color:#fff;
+  }
+  .topbar-btn.topbar-profile .material-icons-round{
+    font-size:32px;
+  }
+  .topbar-title{
+    flex:1;text-align:center;
+    font-size:17px;font-weight:700;
+    color:#fff;
+    padding:0 6px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    letter-spacing:.2px;
+  }
+  .topbar-spacer{width:44px;height:44px;flex-shrink:0;}
+
+  /* ====== Bottom Bar ====== */
+  .bottombar{
+    position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+    width:100%;max-width:480px;
+    background:var(--navy);
+    display:flex;align-items:center;justify-content:space-around;
+    padding:6px 2px 8px;
+    border-top:3px solid var(--navy-2);
+    z-index:30;
+    box-shadow:0 -4px 14px rgba(0,0,0,.15);
+  }
+  .bbtn{
+    flex:1;
+    background:transparent;border:none;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    gap:2px;
+    padding:6px 2px;
+    cursor:pointer;
+    font-family:inherit;
+    transition:transform .12s;
+    min-width:0;
+  }
+  .bbtn:active{transform:scale(.9);}
+  .bbtn .material-icons-round{
+    font-size:26px;
+    color:#fff;
+    opacity:.55;
+    transition:all .2s;
+  }
+  .bbtn.active .material-icons-round{
+    font-size:32px;
+    opacity:1;
+    color:#fff;
+  }
+  .bbtn.active{
+    background:rgba(255,255,255,.08);
+    border-radius:12px;
+  }
+
+  .content{padding:16px 14px 10px;}
+
+  /* ====== ڈیش بورڈ ====== */
+  .dash-section{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:16px 18px;
+    margin-bottom:14px;
+    box-shadow:var(--shadow-sm);
+  }
+  .dash-title{
+    font-size:15px;
+    font-weight:700;
+    color:var(--navy);
+    margin:0 0 12px 0;
+    display:flex;align-items:center;gap:8px;
+    letter-spacing:.2px;
+  }
+  .dash-title .material-icons-round{
+    font-size:22px;color:var(--navy);
+  }
+  .dash-row{
+    display:flex;justify-content:space-between;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px dashed var(--border);
+    font-size:16px;
+  }
+  .dash-row:last-child{border-bottom:none;}
+  .dash-row .label{
+    color:var(--muted);
+    font-size:15px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .dash-row .label .material-icons-round{
+    font-size:20px;
+    color:var(--muted);
+  }
+  .dash-row .value{
+    font-weight:700;
+    font-size:18px;
+    font-family:'Poppins',sans-serif;
+  }
+  .dash-row .value.green{color:var(--green);}
+  .dash-row .value.red{color:var(--red);}
+
+  .dash-item{
+    display:flex;justify-content:space-between;
+    align-items:center;
+    padding:12px 0;
+    border-bottom:1px solid var(--border);
+    font-size:15px;
+  }
+  .dash-item:last-child{border-bottom:none;}
+  .dash-item .name{
+    font-weight:600;
+    color:var(--ink);
+    font-size:16px;
+  }
+  .dash-item .info{
+    color:var(--muted);
+    font-size:13.5px;
+    margin-top:2px;
+  }
+  .dash-item .amount{
+    font-weight:700;
+    font-family:'Poppins',sans-serif;
+    font-size:17px;
+    color:var(--navy);
+  }
+
+  /* ====== Welcome Chip ====== */
+  .welcome-chip{
+    display:flex;align-items:center;gap:10px;
+    background:linear-gradient(135deg,var(--navy),var(--navy-2));
+    color:#fff;border-radius:14px;padding:14px 16px;margin-bottom:14px;
+    box-shadow:var(--shadow-md);
+  }
+  .welcome-chip .material-icons-round{font-size:30px;color:#fff;opacity:.9;}
+  .welcome-chip .wc-name{font-size:16px;font-weight:700;}
+  .welcome-chip .wc-role{font-size:12.5px;color:#C7D3E8;margin-top:2px;}
+
+  /* ====== Buttons ====== */
+  .primary-btn{
+    width:100%;background:var(--navy);color:#fff;
+    border:none;border-radius:12px;
+    padding:16px;font-size:17px;font-weight:700;
+    cursor:pointer;font-family:inherit;margin-top:14px;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    transition:background .15s, transform .1s;
+    box-shadow:var(--shadow-sm);
+  }
+  .primary-btn:active{background:var(--navy-2);transform:scale(.99);}
+  .primary-btn .material-icons-round{font-size:22px;}
+  .primary-btn:disabled{opacity:.55;}
+  .ghost-btn{
+    width:100%;background:transparent;color:var(--navy);
+    border:1.5px solid var(--navy);border-radius:12px;
+    padding:14px;font-size:15.5px;font-weight:700;
+    cursor:pointer;font-family:inherit;margin-top:10px;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .ghost-btn:active{background:var(--navy-soft);}
+  .ghost-btn .material-icons-round{font-size:20px;}
+
+  .section-title{
+    font-size:16px;font-weight:700;
+    color:var(--navy);margin:16px 0 10px;
+    letter-spacing:.2px;
+  }
+
+  /* ====== Search Box ====== */
+  .search-box{
+    display:flex;align-items:center;gap:10px;
+    background:#fff;border:1.5px solid var(--border);
+    border-radius:12px;padding:12px 14px;margin-bottom:14px;
+    box-shadow:var(--shadow-sm);
+  }
+  .search-box .material-icons-round{
+    color:var(--muted);font-size:22px;
+  }
+  .search-box input{
+    border:none;outline:none;flex:1;background:transparent;
+    font-family:inherit;font-size:16px;color:var(--ink);
+    padding:2px 0;
+  }
+
+  /* ====== Sel Grid ====== */
+  .sel-grid{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:12px;margin-bottom:16px;
+  }
+  .sel-btn{
+    background:var(--navy);color:#fff;
+    border:2px solid var(--navy-2);
+    border-radius:14px;padding:20px 12px;
+    font-family:inherit;font-size:17px;font-weight:700;
+    cursor:pointer;text-align:center;
+    line-height:1.4;
+    min-height:80px;
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .12s, background .15s;
+    word-break:break-word;
+    box-shadow:var(--shadow-sm);
+  }
+  .sel-btn:active{transform:scale(.96);}
+  .sel-btn.active{
+    background:#fff;color:var(--navy);
+    border-color:var(--navy);
+    box-shadow:0 0 0 3px var(--navy) inset;
+  }
+
+  /* ====== Recent Table (v2 — split bag/roll) ====== */
+  .recent-title{
+    font-size:15px;font-weight:700;
+    color:var(--navy);margin:18px 0 10px;
+    display:flex;align-items:center;gap:6px;
+  }
+  .recent-title .material-icons-round{font-size:20px;color:var(--navy);}
+  .recent-title .dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-inline-start:4px;}
+  .recent-title .dot.bag{background:var(--green);}
+  .recent-title .dot.roll{background:var(--red);}
+  .recent-wrap{
+    background:#fff;border:1px solid var(--border);
+    border-radius:12px;overflow-x:auto;
+    box-shadow:var(--shadow-sm);
+  }
+  .recent-table, .filtered-table{
+    width:100%;border-collapse:collapse;
+    font-size:13.5px;direction:rtl;
+    table-layout:fixed;
+  }
+  .recent-table thead tr, .filtered-table thead tr{background:var(--navy);color:#fff;}
+  .recent-table th, .filtered-table th{
+    padding:11px 4px;text-align:center;font-weight:700;
+    font-size:12.5px;
+    border:1px solid rgba(255,255,255,.15);
+    white-space:nowrap;
+  }
+  .recent-table td, .filtered-table td{
+    padding:12px 4px;color:var(--ink);
+    border:1px solid var(--border);
+    text-align:center;font-size:14px;
+    font-weight:700;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .recent-table td.bal-pos, .filtered-table td.bal-pos{color:var(--green);font-weight:800;}
+  .recent-table td.bal-neg, .filtered-table td.bal-neg{color:var(--red);font-weight:800;}
+  .recent-table col.wide, .filtered-table col.wide{width:26%;}
+  .recent-table col.narrow, .filtered-table col.narrow{width:16%;}
+
+  /* ====== حساب مکمل ====== */
+  .settle-top{
+    width:100%;
+    background:var(--navy-soft);
+    color:var(--navy);
+    border:1.5px dashed var(--navy-2);
+    border-radius:12px;
+    padding:13px;
+    font-size:15px;
+    font-weight:700;
+    font-family:inherit;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    margin-bottom:14px;
+  }
+  .settle-top:active{background:#E1E8F2;}
+  .settle-top .material-icons-round{font-size:22px;}
+
+  /* ====== Skeleton ====== */
+  .skeleton-card{
+    background:#fff;border:1px solid var(--border);
+    border-radius:12px;padding:16px 14px;
+    margin-bottom:10px;
+  }
+  .skeleton-line{
+    height:15px;border-radius:8px;
+    background:linear-gradient(90deg, #EEF2F8 25%, #E4E1D6 50%, #EEF2F8 75%);
+    background-size:200% 100%;
+    animation:skeletonShine 1.5s infinite;
+    margin-bottom:10px;
+  }
+  .skeleton-line.short{width:55%;}
+  .skeleton-line.medium{width:80%;}
+  .skeleton-line:last-child{margin-bottom:0;}
+  @keyframes skeletonShine{
+    0%{background-position:200% 0;}
+    100%{background-position:-200% 0;}
+  }
+
+  .skeleton-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;
+  }
+  .skeleton-box{
+    height:80px;border-radius:14px;
+    background:linear-gradient(90deg, #EEF2F8 25%, #E4E1D6 50%, #EEF2F8 75%);
+    background-size:200% 100%;
+    animation:skeletonShine 1.5s infinite;
+  }
+
+  /* ====== Loading spinner ====== */
+  .loading-box{text-align:center;padding:30px 20px;color:var(--muted);font-size:15px;}
+  .spinner{
+    display:inline-block;width:34px;height:34px;
+    border:3px solid var(--border);border-top-color:var(--navy);
+    border-radius:50%;animation:spin 1s linear infinite;
+    margin-bottom:12px;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ====== Form ====== */
+  .form-grid{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:14px 12px;margin-bottom:8px;
+  }
+  .form-grid .field.full{grid-column:1 / -1;}
+  .field{margin-bottom:0;}
+  .field label{
+    display:block;font-size:14px;
+    color:var(--ink);margin-bottom:7px;font-weight:700;
+  }
+  .field label .req{color:var(--red);}
+  .field input, .field select{
+    width:100%;padding:14px 14px;
+    border:1.5px solid var(--border);border-radius:12px;
+    font-family:inherit;font-size:16px;
+    background:#fff;color:var(--ink);
+    font-weight:600;
+  }
+  .field input:focus, .field select:focus{border-color:var(--navy);outline:none;}
+  .field input.err{border-color:var(--red);}
+  .field .errmsg{color:var(--red);font-size:13px;margin-top:5px;}
+
+  /* ====== Records Table ====== */
+  .records-header{
+    display:flex;justify-content:space-between;
+    align-items:center;margin-bottom:12px;gap:8px;
+  }
+  .records-header .info{font-size:15px;color:var(--muted);font-weight:600;}
+  .save-btn{
+    background:var(--navy-soft);color:var(--navy);
+    border:1.5px solid var(--navy-2);border-radius:10px;
+    padding:9px 14px;font-size:14px;
+    font-family:inherit;cursor:pointer;font-weight:700;
+    display:flex;align-items:center;gap:6px;
+    white-space:nowrap;
+  }
+  .save-btn .material-icons-round{font-size:18px;}
+  .save-btn:disabled{opacity:.55;}
+
+  .filter-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 10px;}
+  .filter-btn{
+    background:#fff;border:1.5px solid var(--navy-2);color:var(--navy);
+    border-radius:14px;padding:16px 10px;font-family:inherit;
+    font-size:15px;font-weight:700;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+    box-shadow:var(--shadow-sm);
+  }
+  .filter-btn .material-icons-round{font-size:26px;}
+  .filter-btn.bag{border-color:var(--green);color:var(--green);}
+  .filter-btn.roll{border-color:var(--red);color:var(--red);}
+  .filter-btn:active{transform:scale(.97);}
+
+  .records-table-wrap{
+    background:#fff;border:1px solid var(--border);
+    border-radius:12px;overflow-x:auto;
+    box-shadow:var(--shadow-sm);
+  }
+  .records-table{
+    width:100%;border-collapse:collapse;
+    font-size:14px;direction:rtl;
+    table-layout:fixed;
+  }
+  .records-table thead tr{background:var(--navy);color:#fff;}
+  .records-table th{
+    padding:12px 6px;text-align:center;font-weight:700;
+    font-size:13.5px;
+    border:1px solid rgba(255,255,255,.15);
+    white-space:nowrap;
+  }
+  .records-table tbody tr{
+    cursor:pointer;-webkit-tap-highlight-color:rgba(16,41,77,.1);
+    user-select:none;
+  }
+  .records-table tbody tr:active{background:var(--navy-soft);}
+  .records-table tbody tr.pressed{background:#FFE5B4 !important;}
+  .records-table td{
+    padding:13px 6px;color:var(--ink);
+    border:1px solid var(--border);
+    text-align:center;font-size:15px;
+    font-weight:700;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .records-table td.bal-pos{color:var(--green);font-weight:800;}
+  .records-table td.bal-neg{color:var(--red);font-weight:800;}
+
+  /* ====== Overlays ====== */
+  .overlay{
+    position:fixed;inset:0;background:rgba(16,41,77,.6);
+    display:flex;align-items:flex-end;justify-content:center;z-index:50;
+  }
+  .sheet-popup,.receipt-sheet{
+    background:#fff;width:100%;max-width:480px;
+    border-radius:22px 22px 0 0;
+    padding:24px 20px 26px;max-height:88vh;overflow-y:auto;
+    box-shadow:0 -8px 30px rgba(0,0,0,.2);
+  }
+  .sheet-title{
+    font-size:19px;font-weight:700;color:var(--navy);
+    margin-bottom:16px;text-align:center;
+  }
+  .popup-btn{
+    width:100%;padding:16px;margin-bottom:10px;
+    border-radius:12px;font-family:inherit;
+    font-size:16.5px;font-weight:700;
+    cursor:pointer;border:none;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .popup-btn .material-icons-round{font-size:22px;}
+  .popup-btn.edit{background:var(--navy);color:#fff;}
+  .popup-btn.delete{background:var(--red);color:#fff;}
+  .popup-btn.cancel{background:transparent;color:var(--muted);border:1.5px solid var(--border);}
+
+  .info-msg{
+    background:#FFF8E1;border:1.5px solid #FFE082;
+    border-radius:12px;padding:16px 18px;margin:14px 0;
+    font-size:15px;color:#5D4037;line-height:1.9;text-align:right;
+  }
+
+  /* ====== Receipt ====== */
+  .receipt-head{text-align:center;margin-bottom:8px;}
+  .receipt-head .app-name{font-size:20px;font-weight:800;color:var(--navy);letter-spacing:1px;font-family:'Poppins',sans-serif;}
+  .receipt-head .kind{font-size:15px;color:var(--navy);margin-top:8px;font-weight:700;}
+  .receipt-divider{border-top:1.5px dashed var(--border);margin:14px 0;}
+  .receipt-row{
+    display:flex;justify-content:space-between;
+    padding:7px 0;font-size:15px;
+  }
+  .receipt-row .k{color:var(--muted);font-weight:600;}
+  .receipt-row .v{font-weight:700;text-align:left;}
+  .receipt-balance{text-align:center;margin:16px 0 6px;}
+  .receipt-balance .lbl{font-size:14px;color:var(--muted);}
+  .receipt-balance .val{
+    font-size:30px;font-weight:800;
+    font-family:'Poppins',sans-serif;margin-top:4px;
+  }
+
+  /* ====== Toast ====== */
+  .toast{
+    position:fixed;bottom:115px;left:50%;transform:translateX(-50%);
+    background:var(--navy);color:#fff;padding:14px 22px;
+    border-radius:12px;font-size:15px;z-index:100;
+    box-shadow:0 8px 24px rgba(0,0,0,.25);
+    max-width:88%;text-align:center;
+    font-weight:600;
+    animation:toastIn .25s ease;
+  }
+  @keyframes toastIn{
+    from{opacity:0;transform:translateX(-50%) translateY(10px);}
+    to{opacity:1;transform:translateX(-50%) translateY(0);}
+  }
+
+  /* ====== PIN Login ====== */
+  .lock-wrap{
+    min-height:100vh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    padding:30px 26px;text-align:center;
+  }
+  .lock-wrap .app-name{
+    font-size:26px;font-weight:800;color:var(--navy);
+    letter-spacing:1.5px;font-family:'Poppins',sans-serif;
+    margin-top:16px;margin-bottom:34px;
+  }
+  .lock-wrap input{
+    width:100%;max-width:220px;text-align:center;
+    letter-spacing:10px;font-size:26px;
+    padding:14px;border:1.5px solid var(--border);
+    border-radius:12px;margin-bottom:14px;font-family:inherit;
+    font-weight:700;
+  }
+  .lock-wrap input.err{border-color:var(--red);}
+  .lock-wrap .primary-btn{max-width:220px;}
+  .lock-wrap .lock-err{color:var(--red);font-size:15px;margin-bottom:10px;font-weight:600;}
+
+  .empty-state{
+    text-align:center;padding:30px 20px;
+    color:var(--muted);font-size:15px;
+  }
+
+  /* ====== Settings ====== */
+  .setting-row{
+    background:#fff;border:1px solid var(--border);border-radius:12px;
+    padding:16px 18px;margin-bottom:10px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:10px;
+    box-shadow:var(--shadow-sm);
+  }
+  .setting-label{
+    font-size:16px;font-weight:700;
+    display:flex;align-items:center;gap:8px;
+  }
+  .setting-label .material-icons-round{font-size:22px;color:var(--navy);}
+  .setting-options{display:flex;gap:8px;}
+  .size-btn{
+    padding:8px 14px;border-radius:10px;
+    border:1.5px solid var(--border);background:#fff;
+    font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;
+  }
+  .size-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="offline-banner" id="offlineBanner">📵 انٹرنیٹ نہیں ہے</div>
+<script>
+/* ===================== متغیرات ===================== */
+const APPS_SCRIPT_URL = "/api/submit";
+const LOGIN_URL = "/api/login";
+const AUTH_KEY = "ismail_auth_v1";
+const APP_NAME = "ISMAIL KNITTING";
+
+let toastTimer = null;
+let longPressTimer = null;
+let pressedRow = null;
+let audioCtx = null;
+
+let data = {
+  entries: [],
+  pending: [],
+  settings: { fontScale: "medium" }
+};
+
+let auth = null; /* {token,name,role,exp} */
+let state = { screen: 'home' };
+let formDraft = {};
+let fieldErrors = {};
+
+/* ===================== Material Icons ===================== */
+const mi = (name)=>`<span class="material-icons-round">${name}</span>`;
+const iconHome = mi('home');
+const iconIn = mi('arrow_downward');
+const iconAdd = mi('add_circle');
+const iconOut = mi('arrow_upward');
+const iconBill = mi('receipt_long');
+const iconRecords = mi('list_alt');
+const iconProfile = mi('account_circle');
+const iconBack = mi('chevron_right');
+const iconSearch = mi('search');
+const iconCheck = mi('check_circle');
+const iconEdit = mi('edit');
+const iconDelete = mi('delete');
+const iconClose = mi('close');
+const iconSave = mi('save');
+const iconSettle = mi('refresh');
+const iconList = mi('list_alt');
+const iconLock = mi('lock');
+const iconFont = mi('text_fields');
+const iconClear = mi('delete_sweep');
+const iconBusiness = mi('business');
+const iconLabel = mi('label');
+const iconToday = mi('today');
+const iconMoney = mi('payments');
+const iconArrowDown = mi('arrow_downward');
+const iconArrowUp = mi('arrow_upward');
+const iconCamera = mi('photo_camera');
+const iconBag = mi('inventory_2');
+const iconRoll = mi('layers');
+
+/* ===================== Helpers ===================== */
+function todayStr(){
+  const d = new Date();
+  const p = n => String(n).padStart(2,'0');
+  return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate());
+}
+function fmt(n){ return Number(n||0).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:3}); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function esc(s){
+  if(s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function escAttr(s){ return esc(s); }
+function safeFileName(s){ return String(s || '').replace(/[\\\/:*?"<>|]+/g,'_').trim() || 'file'; }
+function isNumPositive(v){ const n = parseFloat(v); return !isNaN(n) && n > 0; }
+function roleLabel(r){ return r === 'owner' ? 'مالک' : 'ملازم'; }
+
+function companyGridHtml(list, q, act, active){
+  const ql = (q || '').trim().toLowerCase();
+  const filtered = (list || []).filter(c => !ql || String(c).toLowerCase().includes(ql));
+  if(filtered.length === 0) return `<div class="empty-state">کوئی کمپنی نہیں ملی</div>`;
+  let html = `<div class="sel-grid">`;
+  filtered.forEach(c => {
+    html += `<button class="sel-btn ${c === active ? 'active' : ''}" data-act="${act}" data-name="${escAttr(c)}">${esc(c)}</button>`;
+  });
+  return html + `</div>`;
+}
+function searchBoxHtml(q, listKey, act, useActive){
+  const active = useActive ? (state.company || null) : null;
+  return `<div class="search-box">
+    ${iconSearch}
+    <input id="companySearch" data-list="${listKey}" data-actname="${act}" data-active="${useActive ? 1 : 0}" placeholder="کمپنی تلاش کریں..." value="${escAttr(q)}">
+  </div>
+  <div id="companyGridWrap">${companyGridHtml(state[listKey] || [], q, act, active)}</div>`;
+}
+
+function errorBox(){
+  return `<div class="info-msg" style="text-align:center;background:#FDECEA;border-color:#F5B7B1;color:#7B241C;">
+    ⚠️ Sheet سے ڈیٹا نہیں آ سکا اور کوئی محفوظ شدہ ڈیٹا بھی موجود نہیں۔<br>انٹرنیٹ یا سرور چیک کریں۔
+    <button class="ghost-btn" data-act="retry-load" style="color:#7B241C;border-color:#7B241C;">${iconSettle} دوبارہ کوشش کریں</button>
+  </div>`;
+}
+function cacheBanner(){
+  return `<div class="cache-banner">
+    <span>⚠️ انٹرنیٹ نہیں — یہ آخری محفوظ شدہ ڈیٹا ہے</span>
+    <button data-act="retry-load">تازہ کریں</button>
+  </div>`;
+}
+
+function askInput(title, opts){
+  opts = opts || {};
+  return new Promise(resolve => {
+    removeOverlay('askOverlay');
+    const div = document.createElement('div');
+    div.className = 'overlay'; div.id = 'askOverlay'; div.style.zIndex = '90';
+    div.innerHTML = `<div class="sheet-popup">
+      <div class="sheet-title">${esc(title)}</div>
+      <div class="field"><input id="askInputEl" type="${opts.type || 'text'}" placeholder="${escAttr(opts.placeholder || '')}" autocomplete="off"></div>
+      <button class="primary-btn" id="askOk">${iconCheck} ٹھیک ہے</button>
+      <button class="popup-btn cancel" id="askCancel" style="margin-top:10px;">${iconClose} منسوخ</button>
+    </div>`;
+    document.body.appendChild(div);
+    const inp = document.getElementById('askInputEl');
+    const done = v => { div.remove(); resolve(v); };
+    document.getElementById('askOk').addEventListener('click', () => done(inp.value));
+    document.getElementById('askCancel').addEventListener('click', () => done(null));
+    inp.addEventListener('keydown', e => { if(e.key === 'Enter') done(inp.value); });
+    setTimeout(() => inp.focus(), 80);
+  });
+}
+function askConfirm(msg){
+  return new Promise(resolve => {
+    removeOverlay('askOverlay');
+    const div = document.createElement('div');
+    div.className = 'overlay'; div.id = 'askOverlay'; div.style.zIndex = '90';
+    div.innerHTML = `<div class="sheet-popup">
+      <div class="info-msg" style="margin-top:0;">${esc(msg)}</div>
+      <button class="primary-btn" id="askOk">${iconCheck} ہاں</button>
+      <button class="popup-btn cancel" id="askCancel" style="margin-top:10px;">${iconClose} نہیں</button>
+    </div>`;
+    document.body.appendChild(div);
+    const done = v => { div.remove(); resolve(v); };
+    document.getElementById('askOk').addEventListener('click', () => done(true));
+    document.getElementById('askCancel').addEventListener('click', () => done(false));
+  });
+}
+
+/* ===================== آواز ===================== */
+function playSound(type){
+  try{
+    if(!audioCtx){ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    if(audioCtx.state === 'suspended'){ audioCtx.resume(); }
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    if(type === 'success'){
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1320, audioCtx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+      osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.25);
+    } else if(type === 'error'){
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
+      osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.22);
+    }
+  }catch(e){ console.log('sound error', e); }
+}
+
+/* ===================== Auth (PIN) ===================== */
+function loadAuth(){
+  try{
+    const raw = localStorage.getItem(AUTH_KEY);
+    if(!raw) return null;
+    const a = JSON.parse(raw);
+    if(!a || !a.token || !a.exp || Date.now() > a.exp) return null;
+    return a;
+  }catch(e){ return null; }
+}
+function saveAuth(a){
+  auth = a;
+  try{ localStorage.setItem(AUTH_KEY, JSON.stringify(a)); }catch(e){}
+}
+function clearAuth(){
+  auth = null;
+  try{ localStorage.removeItem(AUTH_KEY); }catch(e){}
+}
+async function doLogin(pin){
+  try{
+    const res = await fetch(LOGIN_URL, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ pin: pin })
+    });
+    const j = await res.json().catch(()=>null);
+    if(!j) return { status:'error', message:'جواب نہیں ملا' };
+    return j;
+  }catch(e){ return { status:'error', message: String(e) }; }
+}
+
+/* ===================== Local Storage (entries/pending + settings) ===================== */
+const STORE_KEY = 'ismail_ledger_data';
+
+function normalizeData(){
+  if(!Array.isArray(data.entries)) data.entries = [];
+  if(!Array.isArray(data.pending)) data.pending = [];
+  if(!data.settings) data.settings = { fontScale: "medium" };
+  if(!data.settings.fontScale) data.settings.fontScale = "medium";
+}
+function pruneOldEntries(){
+  const d = new Date(); d.setDate(d.getDate() - 35);
+  const p = n => String(n).padStart(2,'0');
+  const cut = d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate());
+  data.entries = data.entries.filter(e => !e.date || String(e.date) >= cut);
+}
+async function loadData(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw){ const parsed = JSON.parse(raw); data = { ...data, ...parsed }; }
+  }catch(e){ console.error('load failed', e); }
+  normalizeData();
+  pruneOldEntries();
+  applyFontScale();
+  auth = loadAuth();
+  render();
+  if(auth) flushPending(false);
+}
+async function persist(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(data)); }catch(e){ console.error('save failed', e); }
+}
+function applyFontScale(){
+  document.body.classList.remove('font-small','font-medium','font-large');
+  const scale = (data.settings && data.settings.fontScale) || 'medium';
+  document.body.classList.add('font-' + scale);
+}
+
+/* ---- عام ریڈ اونلی ڈیٹا کی آف لائن کاپی (مجبور نہیں، صرف کامیاب لوڈ پر) ---- */
+function cacheSet(key, val){
+  try{ localStorage.setItem('cache:' + key, JSON.stringify({ v: val, t: Date.now() })); }catch(e){}
+}
+function cacheGet(key){
+  try{
+    const raw = localStorage.getItem('cache:' + key);
+    if(!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed && parsed.v !== undefined ? parsed.v : null;
+  }catch(e){ return null; }
+}
+
+let flushing = false;
+async function flushPending(silent){
+  if(flushing || !data.pending || data.pending.length === 0) return 0;
+  if(!navigator.onLine) return 0;
+  flushing = true;
+  let sent = 0;
+  try{
+    while(data.pending.length){
+      const item = data.pending[0];
+      const res = await sendToSheet(item);
+      if(res && res.status === 'ok'){ data.pending.shift(); sent++; await persist(); }
+      else break;
+    }
+  } finally { flushing = false; }
+  if(sent > 0 && !silent) showToast('✅ ' + sent + ' رکی ہوئی اینٹریاں Sheet پر بھیج دی گئیں');
+  return sent;
+}
+
+/* ===================== Toast ===================== */
+function showToast(msg){
+  const old = document.querySelector('.toast');
+  if(old) old.remove();
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t);
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.remove(), 2600);
+}
+
+/* ===================== Navigation ===================== */
+function go(screen, params={}){
+  state.scrollX = window.scrollX; state.scrollY = 0;
+  state = { screen: screen, kind: state.kind, ...params };
+  formDraft = {}; fieldErrors = {};
+  render();
+}
+
+/* ===================== Apps Script Calls ===================== */
+async function sendToSheet(payload){
+  try{
+    const headers = {'Content-Type':'text/plain;charset=utf-8'};
+    if(auth && auth.token) headers['Authorization'] = 'Bearer ' + auth.token;
+    const res = await fetch(APPS_SCRIPT_URL, { method:'POST', headers: headers, body: JSON.stringify(payload) });
+    if(res.status === 401){
+      clearAuth();
+      showToast('لاگ اِن کی معیاد ختم — دوبارہ PIN درج کریں');
+      render();
+      return { status:'error', message:'unauthorized' };
+    }
+    if(!res.ok) return { status:'error', message: 'HTTP ' + res.status };
+    const j = await res.json();
+    return j || { status:'error', message:'خالی جواب' };
+  }catch(err){
+    console.error('send error:', err);
+    return { status:'error', message: String(err) };
+  }
+}
+
+async function fetchCompaniesFromDrive(){
+  const result = await sendToSheet({ action: 'getCompanies' });
+  if(result.status === 'ok') return result.companies || [];
+  return null;
+}
+async function fetchBrandsFromDrive(company){
+  const result = await sendToSheet({ action: 'getBrands', company: company });
+  if(result.status === 'ok') return result.brands || [];
+  return null;
+}
+async function createBrandOnDrive(company, brandList){
+  return await sendToSheet({ action: 'createBrandSheet', company: company, brand: brandList });
+}
+async function fetchRecentEntries(company, brand, limit){
+  const result = await sendToSheet({ action: 'getRecentEntries', company: company, brand: brand, limit: limit || 15 });
+  if(result.status === 'ok') return result.entries || [];
+  return null;
+}
+async function fetchBrandData(company, brand){
+  const result = await sendToSheet({ action: 'getBrandData', company: company, brand: brand });
+  if(result.status === 'ok') return result.entries || [];
+  return null;
+}
+async function fetchBillCompaniesFromDrive(){
+  const result = await sendToSheet({ action: 'getBillCompanies' });
+  if(result.status === 'ok') return result.companies || [];
+  return null;
+}
+async function fetchBillsFromDrive(company){
+  const result = await sendToSheet({ action: 'getBills', company: company });
+  if(result.status === 'ok'){
+    return { bills: result.bills || [], currentBalance: parseFloat(result.currentBalance) || 0 };
+  }
+  return null;
+}
+async function saveBillToDrive(payload){ return await sendToSheet({ action: 'handleBillEntry', ...payload }); }
+async function deleteBillOnDrive(payload){ return await sendToSheet({ action: 'deleteBill', ...payload }); }
+
+/* ===================== Offline Detection ===================== */
+function updateOfflineBanner(){
+  const banner = document.getElementById('offlineBanner');
+  if(!banner) return;
+  if(navigator.onLine) banner.classList.remove('show');
+  else banner.classList.add('show');
+}
+window.addEventListener('online', () => { updateOfflineBanner(); if(auth) flushPending(false); });
+window.addEventListener('offline', updateOfflineBanner);
+document.addEventListener('DOMContentLoaded', updateOfflineBanner);
+
+/* ===================== Long Press Helpers ===================== */
+function cancelLongPress(){
+  if(longPressTimer){ clearTimeout(longPressTimer); longPressTimer = null; }
+  if(pressedRow){ pressedRow.classList.remove('pressed'); pressedRow = null; }
+}
+
+/* ===================== Balance ===================== */
+function calcLocalBalance(company, brand){
+  const list = data.entries.filter(e => e.company === company && e.brand === brand);
+  return calcBalanceFromEntries(list);
+}
+function calcBalanceFromEntries(list){
+  let bal = 0;
+  for(const e of list){
+    if(e.type === 'settlement'){ bal = 0; continue; }
+    if(e.type === 'bag') bal += parseFloat(e.weight || 0) || 0;
+    if(e.type === 'roll') bal -= parseFloat(e.rollsWeight || 0) || 0;
+  }
+  return bal;
+}
+async function getCurrentBalance(company, brand){
+  const sheet = await fetchBrandData(company, brand);
+  if(sheet === null) return { balance: calcLocalBalance(company, brand), fromSheet: false };
+  const pend = (data.pending || []).filter(e => e.company === company && e.brand === brand);
+  return { balance: calcBalanceFromEntries(sheet.concat(pend)), fromSheet: true };
+}
+
+/* ===================== Render ===================== */
+function render(){
+  const app = document.getElementById('app');
+
+  if(!auth){
+    app.innerHTML = renderPinLogin();
+    attachHandlers();
+    return;
+  }
+
+  let html = topbarHtml();
+  html += `<div class="content">`;
+
+  if(state.screen === 'home') html += renderHome();
+  else if(state.screen === 'settings') html += renderSettings();
+  else if(state.screen === 'pick-company') html += renderPickCompany();
+  else if(state.screen === 'pick-brand') html += renderPickBrand();
+  else if(state.screen === 'form') html += renderForm();
+  else if(state.screen === 'records') html += renderRecordsCompanies();
+  else if(state.screen === 'records-brand-list') html += renderRecordsBrandList();
+  else if(state.screen === 'records-table-bag') html += renderFilteredTable('bag');
+  else if(state.screen === 'records-table-roll') html += renderFilteredTable('roll');
+  else if(state.screen === 'bill-dashboard') html += renderBillDashboard();
+  else if(state.screen === 'bill-company') html += renderBillCompany();
+  else if(state.screen === 'bill-form') html += renderBillForm();
+  else if(state.screen === 'bill-list-company') html += renderBillListCompany();
+  else if(state.screen === 'bill-list') html += renderBillList();
+  else if(state.screen === 'new-company') html += renderNewCompanyPage();
+  else if(state.screen === 'new-brand') html += renderNewBrandPage();
+
+  html += `</div>`;
+  html += bottombarHtml();
+
+  app.innerHTML = html;
+  attachHandlers();
+
+  if(state.preview) renderReceiptOverlay(state.preview);
+  if(state.showEntryOptions) renderEntryOptions();
+  if(state.billPreview) renderBillPreviewOverlay();
+  if(state.selectedBill) renderBillOptions();
+
+  window.scrollTo(state.scrollX || 0, state.scrollY || 0);
+  state.scrollX = 0; state.scrollY = 0;
+}
+
+/* ===================== PIN Login ===================== */
+function renderPinLogin(){
+  const err = fieldErrors.pin;
+  return `<div class="lock-wrap">
+    <div class="app-name">${APP_NAME}</div>
+    ${err ? `<div class="lock-err">${esc(err === true ? 'PIN غلط ہے' : err)}</div>` : ''}
+    <input id="pinInput" type="password" inputmode="numeric" maxlength="4" placeholder="PIN" class="${err?'err':''}">
+    <button class="primary-btn" data-act="pin-submit" id="pinSubmitBtn">داخل ہوں</button>
+  </div>`;
+}
+
+/* ===================== Topbar ===================== */
+function topbarHtml(){
+  const titles = {
+    home: 'ڈیش بورڈ',
+    settings: 'ترتیبات',
+    'pick-company': state.kind === 'bag' ? 'بورے — کمپنی' : 'گولے — کمپنی',
+    'pick-brand': state.kind === 'bag' ? 'بورے — برانڈ' : 'گولے — برانڈ',
+    form: state.kind === 'bag' ? 'بورے کی اینٹری' : 'گولوں کی اینٹری',
+    records: 'ریکارڈ',
+    'records-brand-list': state.company || 'ریکارڈ',
+    'records-table-bag': 'بورے — ' + (state.brand || ''),
+    'records-table-roll': 'گولے — ' + (state.brand || ''),
+    'bill-dashboard': 'بل',
+    'bill-company': 'بل بنائیں',
+    'bill-form': 'بل کا فارم',
+    'bill-list-company': 'بلز دیکھیں',
+    'bill-list': state.company || 'بلز',
+    'new-company': 'نئی کمپنی',
+    'new-brand': 'نیا برانڈ'
+  };
+  const s = state.screen;
+  const showBack = s !== 'home';
+  return `<div class="topbar">
+    <button class="topbar-btn topbar-profile" data-act="open-profile">${iconProfile}</button>
+    <div class="topbar-title">${titles[s] || ''}</div>
+    ${showBack ? `<button class="topbar-btn" data-act="back">${iconBack}</button>` : `<div class="topbar-spacer"></div>`}
+  </div>`;
+}
+
+/* ===================== Bottom Bar ===================== */
+function bottombarHtml(){
+  const s = state.screen;
+  const isHome = s === 'home' || s === 'settings';
+  const isBag = (s === 'pick-company' || s === 'pick-brand' || s === 'form') && state.kind === 'bag';
+  const isRoll = (s === 'pick-company' || s === 'pick-brand' || s === 'form') && state.kind === 'roll';
+  const isAdd = (s === 'new-company' || s === 'new-brand');
+  const isBill = s.indexOf('bill') === 0;
+  const isRec = s.indexOf('records') === 0;
+  const isOwner = auth && auth.role === 'owner';
+
+  return `<div class="bottombar">
+    <button class="bbtn ${isHome?'active':''}" data-act="bb-home">${iconHome}</button>
+    <button class="bbtn ${isBag?'active':''}" data-act="bb-bag">${iconIn}</button>
+    <button class="bbtn ${isAdd?'active':''}" data-act="bb-add">${iconAdd}</button>
+    <button class="bbtn ${isRoll?'active':''}" data-act="bb-roll">${iconOut}</button>
+    ${isOwner ? `<button class="bbtn ${isBill?'active':''}" data-act="bb-bill">${iconBill}</button>` : ''}
+    <button class="bbtn ${isRec?'active':''}" data-act="bb-records">${iconRecords}</button>
+  </div>`;
+}
+
+/* ===================== Home ڈیش بورڈ ===================== */
+function renderHome(){
+  const today = todayStr();
+  const todayEntries = data.entries.filter(e => e.date === today);
+
+  let todayInWeight = 0, todayOutWeight = 0;
+  const inByCompany = {}, outByCompany = {};
+
+  todayEntries.forEach(e => {
+    if(e.type === 'bag'){
+      const w = parseFloat(e.weight || 0);
+      todayInWeight += w;
+      if(!inByCompany[e.company]) inByCompany[e.company] = { weight: 0, count: 0 };
+      inByCompany[e.company].weight += w;
+      inByCompany[e.company].count += parseFloat(e.bagsCount || 0);
+    }
+    if(e.type === 'roll'){
+      const w = parseFloat(e.rollsWeight || 0);
+      todayOutWeight += w;
+      if(!outByCompany[e.company]) outByCompany[e.company] = { weight: 0, count: 0 };
+      outByCompany[e.company].weight += w;
+      outByCompany[e.company].count += parseFloat(e.rollsCount || 0);
+    }
+  });
+
+  let inRows = '';
+  const inKeys = Object.keys(inByCompany);
+  if(inKeys.length === 0) inRows = `<div class="empty-state" style="padding:14px;">آج کوئی بورہ نہیں آیا</div>`;
+  else inKeys.forEach(k => {
+    const item = inByCompany[k];
+    inRows += `<div class="dash-item"><div><div class="name">${esc(k)}</div><div class="info">${fmt(item.count)} بوری</div></div><div class="amount">${fmt(item.weight)} kg</div></div>`;
+  });
+
+  let outRows = '';
+  const outKeys = Object.keys(outByCompany);
+  if(outKeys.length === 0) outRows = `<div class="empty-state" style="padding:14px;">آج کوئی گولہ نہیں گیا</div>`;
+  else outKeys.forEach(k => {
+    const item = outByCompany[k];
+    outRows += `<div class="dash-item"><div><div class="name">${esc(k)}</div><div class="info">${fmt(item.count)} گولہ</div></div><div class="amount">${fmt(item.weight)} kg</div></div>`;
+  });
+
+  return `
+    <div class="welcome-chip">
+      ${iconProfile}
+      <div>
+        <div class="wc-name">خوش آمدید، ${esc(auth.name)}</div>
+        <div class="wc-role">${roleLabel(auth.role)}</div>
+      </div>
+    </div>
+    <div class="dash-section">
+      <div class="dash-title">${iconToday} آج کا خلاصہ</div>
+      <div class="dash-row"><div class="label">${iconArrowDown} آج آیا</div><div class="value green">${fmt(todayInWeight)} kg</div></div>
+      <div class="dash-row"><div class="label">${iconArrowUp} آج گیا</div><div class="value red">${fmt(todayOutWeight)} kg</div></div>
+    </div>
+    <div class="dash-section">
+      <div class="dash-title">${iconArrowDown} آج کتنے بورے آئے</div>
+      ${inRows}
+    </div>
+    <div class="dash-section">
+      <div class="dash-title">${iconArrowUp} آج کتنے گولے گئے</div>
+      ${outRows}
+    </div>
+  `;
+}
+
+/* ===================== Settings ===================== */
+function renderSettings(){
+  const scale = (data.settings && data.settings.fontScale) || 'medium';
+  return `
+    <div class="welcome-chip">
+      ${iconProfile}
+      <div>
+        <div class="wc-name">${esc(auth.name)}</div>
+        <div class="wc-role">${roleLabel(auth.role)}</div>
+      </div>
+    </div>
+    <div class="section-title">فونٹ سائز</div>
+    <div class="setting-row">
+      <div class="setting-label">${iconFont} متن</div>
+      <div class="setting-options">
+        <button class="size-btn ${scale === 'small' ? 'active' : ''}" data-act="set-font" data-size="small">چھوٹا</button>
+        <button class="size-btn ${scale === 'medium' ? 'active' : ''}" data-act="set-font" data-size="medium">درمیانہ</button>
+        <button class="size-btn ${scale === 'large' ? 'active' : ''}" data-act="set-font" data-size="large">بڑا</button>
+      </div>
+    </div>
+
+    <div class="section-title">رابطہ</div>
+    <div class="setting-row">
+      <div class="setting-label">${mi('email')} Email</div>
+      <div style="font-size:14px;color:var(--muted);">qari9505@gmail.com</div>
+    </div>
+
+    <div class="section-title">ڈیٹا</div>
+    <div class="setting-row">
+      <div class="setting-label">${iconClear} مقامی صاف</div>
+      <button class="size-btn" data-act="clear-local-data" style="color:#B23A2E;">صاف</button>
+    </div>
+
+    <div style="text-align:center;color:var(--muted);font-size:13px;margin-top:24px;">
+      ${APP_NAME} — ورژن 4.0
+    </div>
+  `;
+}
+
+/* ===================== Pick Company ===================== */
+function renderPickCompany(){
+  if(state.loadingCompanies){
+    return `<div class="section-title">کمپنی منتخب کریں</div>
+      <div class="skeleton-grid"><div class="skeleton-box"></div><div class="skeleton-box"></div><div class="skeleton-box"></div><div class="skeleton-box"></div></div>`;
+  }
+  let html = `<div class="section-title">کمپنی منتخب کریں</div>`;
+  if(state.loadFailed) return html + errorBox();
+  if(state.usingCache) html += cacheBanner();
+  html += searchBoxHtml(state.companySearch || '', 'driveCompanies', 'pick-company', true);
+  if(state.company) html += `<button class="primary-btn" data-act="next-to-brand">آگے بڑھیں ${iconBack}</button>`;
+  return html;
+}
+
+/* ===================== Pick Brand + Split Recent (max 3 each) ===================== */
+function recentColgroup(){
+  return `<colgroup><col><col><col><col class="wide"><col></colgroup>`;
+}
+function splitTableHtml(entries, kind){
+  /* entries: array from fetchRecentEntries (بغیر type field، bag/roll inference سے فرق) */
+  const filtered = (entries || []).filter(e => {
+    if(kind === 'bag') return e.weight !== '' && e.weight !== undefined && e.weight !== null;
+    return e.rollsWeight !== '' && e.rollsWeight !== undefined && e.rollsWeight !== null;
+  }).slice(-3);
+
+  if(filtered.length === 0) return `<div class="empty-state" style="padding:16px;">ابھی کوئی نہیں</div>`;
+
+  let html = `<div class="recent-wrap"><table class="recent-table">${recentColgroup()}<thead><tr>
+    <th>تاریخ</th><th>${kind==='bag'?'بوروں کی تعداد':'گولوں کی تعداد'}</th><th>وزن</th><th>کپڑے کی قسم</th><th>بیلنس</th>
+  </tr></thead><tbody>`;
+  filtered.forEach(e => {
+    const bal = parseFloat(e.balance || 0);
+    const balClass = bal >= 0 ? 'bal-pos' : 'bal-neg';
+    const count = kind === 'bag' ? e.bagsCount : e.rollsCount;
+    const weight = kind === 'bag' ? e.weight : e.rollsWeight;
+    html += `<tr>
+      <td>${esc(e.date) || '-'}</td>
+      <td>${esc(count) || '—'}</td>
+      <td>${esc(weight) || '—'}</td>
+      <td>${esc(e.subType) || '—'}</td>
+      <td class="${balClass}">${fmt(bal)}</td>
+    </tr>`;
+  });
+  html += `</tbody></table></div>`;
+  return html;
+}
+
+function renderPickBrand(){
+  const company = state.company;
+
+  if(state.loadingBrands){
+    return `<div class="section-title">${esc(company)}</div><div class="section-title">برانڈ منتخب کریں</div>
+      <div class="skeleton-grid"><div class="skeleton-box"></div><div class="skeleton-box"></div><div class="skeleton-box"></div><div class="skeleton-box"></div></div>`;
+  }
+  if(state.loadFailed) return `<div class="section-title">${esc(company)}</div>` + errorBox();
+
+  const brand = state.brand || null;
+  const brands = state.driveBrands || [];
+
+  let html = `<div class="settle-top" data-act="settle">${iconSettle} حساب مکمل</div>`;
+  html += `<div class="section-title">${esc(company)}</div>`;
+  if(state.usingCache) html += cacheBanner();
+  html += `<div class="section-title">برانڈ منتخب کریں</div>`;
+
+  if(brands.length === 0){
+    html += `<div class="empty-state">ابھی کوئی برانڈ نہیں</div>`;
+  } else {
+    html += `<div class="sel-grid">`;
+    brands.forEach(b => {
+      html += `<button class="sel-btn ${b === brand ? 'active' : ''}" data-act="pick-brand" data-name="${escAttr(b)}">${esc(b)}</button>`;
+    });
+    html += `</div>`;
+  }
+
+  if(brand){
+    if(state.loadingRecent){
+      html += `<div class="recent-title">${iconList} پچھلے بورے <span class="dot bag"></span></div>
+        <div class="skeleton-card"><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div>
+        <div class="recent-title">${iconList} پچھلے گولے <span class="dot roll"></span></div>
+        <div class="skeleton-card"><div class="skeleton-line medium"></div><div class="skeleton-line short"></div></div>`;
+    } else if(state.recentFailed){
+      html += `<div class="info-msg" style="text-align:center;background:#FDECEA;border-color:#F5B7B1;color:#7B241C;">⚠️ پچھلی اینٹریاں لوڈ نہیں ہو سکیں۔ برانڈ دوبارہ دبا کر دیکھیں۔</div>`;
+    } else {
+      const rec = state.recentEntries || [];
+      const bagCount = rec.filter(e => e.weight !== '' && e.weight !== undefined && e.weight !== null).slice(-3).length;
+      const rollCount = rec.filter(e => e.rollsWeight !== '' && e.rollsWeight !== undefined && e.rollsWeight !== null).slice(-3).length;
+      html += `<div class="recent-title">${iconList} پچھلے بورے (${bagCount}) <span class="dot bag"></span></div>`;
+      html += splitTableHtml(rec, 'bag');
+      html += `<div class="recent-title">${iconList} پچھلے گولے (${rollCount}) <span class="dot roll"></span></div>`;
+      html += splitTableHtml(rec, 'roll');
+    }
+    html += `<button class="primary-btn" data-act="next-to-form">آگے بڑھیں ${iconBack}</button>`;
+  }
+  return html;
+}
+
+/* ===================== Form ===================== */
+function renderForm(){
+  if(formDraft.date === undefined) formDraft.date = todayStr();
+
+  if(state.kind === 'bag'){
+    return `<div class="form-grid">
+      ${field('date','تاریخ','date','full')}
+      ${field('gatePassNo','گیٹ پاس نمبر')}
+      ${field('copyNo','کاپی نمبر')}
+      ${field('bagsCount','بوروں کی تعداد','number',"min='0' inputmode='decimal'")}
+      ${field('weight','بوروں کا وزن','number',"min='0' step='0.01' inputmode='decimal'")}
+      ${field('subType','برانڈ کی قسم','text','full')}
+      ${field('driverName','ڈرائیور کا نام')}
+      ${field('vehicleNo','گاڑی نمبر')}
+    </div>
+    <button class="primary-btn" data-act="preview-bag">${iconBill} رسید دیکھیں</button>`;
+  } else {
+    return `<div class="form-grid">
+      ${field('date','تاریخ','date','full')}
+      ${field('outGatePassNo','روانگی پاس نمبر')}
+      ${field('copyNo','کاپی نمبر')}
+      ${field('rollsCount','گولوں کی تعداد','number',"min='0' inputmode='decimal'")}
+      ${field('rollsWeight','گولوں کا وزن','number',"min='0' step='0.01' inputmode='decimal'")}
+      ${field('subType','برانڈ کی قسم','text','full')}
+      ${field('driverName','ڈرائیور کا نام')}
+      ${field('vehicleNo','گاڑی نمبر')}
+      ${field('plantName','پلانٹ کا نام')}
+    </div>
+    <button class="primary-btn" data-act="preview-roll">${iconBill} رسید دیکھیں</button>`;
+  }
+}
+
+function field(id, label, type='text', extra=''){
+  const err = fieldErrors[id];
+  const isFull = extra.includes('full');
+  const isOpt = extra.includes('opt');
+  const cleanExtra = extra.replace('full','').replace('opt','').trim();
+  const msg = (typeof err === 'string') ? err : 'یہ خانہ لازمی ہے';
+  const val = (formDraft[id] === undefined || formDraft[id] === null) ? '' : formDraft[id];
+  return `<div class="field ${isFull?'full':''}">
+    <label>${label} ${isOpt ? '' : '<span class="req">*</span>'}</label>
+    <input class="${err?'err':''}" id="f_${id}" type="${type}" value="${escAttr(val)}" ${cleanExtra}>
+    ${err?`<div class="errmsg">${msg}</div>`:''}
+  </div>`;
+}
+
+/* ===================== نئی کمپنی / نیا برانڈ (ٹیبز) ===================== */
+function addTabsHtml(active){
+  const st = 'flex:1;padding:12px;font-size:15px;display:flex;align-items:center;justify-content:center;gap:6px;';
+  return `<div style="display:flex;gap:8px;margin-bottom:16px;">
+    <button class="size-btn ${active==='company'?'active':''}" style="${st}" data-act="tab-new-company">${iconBusiness} نئی کمپنی</button>
+    <button class="size-btn ${active==='brand'?'active':''}" style="${st}" data-act="tab-new-brand">${iconLabel} نیا برانڈ</button>
+  </div>`;
+}
+
+function renderNewCompanyPage(){
+  if(formDraft.newCompanyName === undefined) formDraft.newCompanyName = '';
+  if(formDraft.newBrandName === undefined) formDraft.newBrandName = '';
+  return `
+    ${addTabsHtml('company')}
+    <div class="section-title">${iconBusiness} نئی کمپنی</div>
+    <div class="field"><label>کمپنی کا نام <span class="req">*</span></label>
+      <input id="f_newCompanyName" type="text" value="${escAttr(formDraft.newCompanyName)}" placeholder="کمپنی کا نام لکھیں"></div>
+    <div class="field" style="margin-top:16px;"><label>پہلے برانڈ کا نام <span class="req">*</span></label>
+      <input id="f_newBrandName" type="text" value="${escAttr(formDraft.newBrandName)}" placeholder="پہلا برانڈ لکھیں"></div>
+    <button class="primary-btn" data-act="save-new-company-page">${iconCheck} محفوظ کریں</button>
+  `;
+}
+
+function collectBrandInputs(){
+  const list = state.newBrandList || [''];
+  state.newBrandList = list.map((v, i) => {
+    const inp = document.getElementById('f_brand_' + i);
+    return inp ? inp.value : v;
+  });
+}
+function renderNewBrandPage(){
+  if(!state.company){
+    let html = addTabsHtml('brand');
+    html += `<div class="section-title">${iconBusiness} کون سی کمپنی کے لیے؟</div>`;
+    if(state.loadingCompanies){
+      return html + `<div class="skeleton-grid"><div class="skeleton-box"></div><div class="skeleton-box"></div><div class="skeleton-box"></div><div class="skeleton-box"></div></div>`;
+    }
+    if(state.loadFailed) return html + errorBox();
+    return html + searchBoxHtml(state.companySearch || '', 'driveCompanies', 'brand-page-pick-company', false);
+  }
+  if(!state.newBrandList) state.newBrandList = [''];
+  const brands = state.newBrandList;
+  let brandFields = '';
+  brands.forEach((b, i) => {
+    brandFields += `<div class="field" style="margin-bottom:12px;display:flex;gap:8px;align-items:flex-end;">
+      <div style="flex:1;"><label>برانڈ ${i+1} <span class="req">*</span></label>
+        <input type="text" id="f_brand_${i}" value="${escAttr(b)}" placeholder="برانڈ کا نام لکھیں"></div>
+      ${brands.length > 1 ? `<button class="topbar-btn" data-act="remove-brand-field" data-idx="${i}" style="background:#B23A2E;color:#fff;width:46px;height:46px;border-radius:12px;">${iconClose}</button>` : ''}
+    </div>`;
+  });
+  return `
+    ${addTabsHtml('brand')}
+    <div class="dash-section" style="text-align:center;">
+      <div style="font-size:14px;color:var(--muted);">${iconBusiness} کمپنی</div>
+      <div style="font-size:18px;font-weight:700;color:var(--navy);margin-top:6px;">${esc(state.company)}</div>
+      <button class="ghost-btn" data-act="brand-change-company" style="margin-top:10px;padding:10px;">کمپنی بدلیں</button>
+    </div>
+    <div class="section-title">${iconLabel} برانڈ کا نام لکھیں</div>
+    ${brandFields}
+    <button class="ghost-btn" data-act="add-brand-field">${iconAdd} نیا برانڈ شامل کریں</button>
+    <button class="primary-btn" data-act="save-new-brand-page">${iconCheck} محفوظ کریں</button>
+  `;
+}
+
+/* ===================== Records — کمپنی ===================== */
+function renderRecordsCompanies(){
+  if(state.loadingCompanies){
+    return `<div class="skeleton-grid"><div class="skeleton-box"></div><div class="skeleton-box"></div><div class="skeleton-box"></div><div class="skeleton-box"></div></div>`;
+  }
+  if(state.loadFailed) return errorBox();
+  let html = '';
+  if(state.usingCache) html += cacheBanner();
+  return html + searchBoxHtml(state.companySearch || '', 'driveCompanies', 'rec-open-company', false);
+}
+
+/* ===================== Records — برانڈ لسٹ + دو بٹن + محفوظ ===================== */
+function renderRecordsBrandList(){
+  const company = state.company;
+
+  if(state.loadingBrands){
+    return `<div class="section-title">${esc(company)}</div>
+      <div class="skeleton-grid"><div class="skeleton-box"></div><div class="skeleton-box"></div><div class="skeleton-box"></div><div class="skeleton-box"></div></div>`;
+  }
+  if(state.loadFailed) return `<div class="section-title">${esc(company)}</div>` + errorBox();
+
+  const brands = state.driveBrands || [];
+  let html = '';
+  if(!state.brand){
+    html += `<div class="section-title">${esc(company)}</div>`;
+    if(state.usingCache) html += cacheBanner();
+  } else {
+    html += `<div class="records-header">
+      <div class="info">${esc(company)}</div>
+      <button class="save-btn" data-act="save-records-image" ${state.savingImage ? 'disabled' : ''}>${iconCamera} ${state.savingImage ? 'محفوظ ہو رہا ہے...' : 'محفوظ'}</button>
+    </div>`;
+  }
+  html += `<div class="section-title">برانڈ منتخب کریں</div>`;
+
+  if(brands.length === 0){
+    html += `<div class="empty-state">اس کمپنی کا کوئی برانڈ نہیں</div>`;
+  } else {
+    html += `<div class="sel-grid">`;
+    brands.forEach(b => {
+      html += `<button class="sel-btn ${b===state.brand?'active':''}" data-act="rec-open-brand" data-name="${escAttr(b)}">${esc(b)}</button>`;
+    });
+    html += `</div>`;
+  }
+
+  if(state.brand){
+    if(state.loadingData){
+      html += `<div class="loading-box"><div class="spinner"></div><div>لوڈ ہو رہا ہے...</div></div>`;
+    } else {
+      const entries = state.brandEntries || [];
+      const bagN = entries.filter(e=>e.type==='bag').length;
+      const rollN = entries.filter(e=>e.type==='roll').length;
+      html += `<div class="filter-btns">
+        <button class="filter-btn bag" data-act="rec-filter-bag">${iconBag}<span>بوروں کی اینٹری (${bagN})</span></button>
+        <button class="filter-btn roll" data-act="rec-filter-roll">${iconRoll}<span>گولوں کی اینٹری (${rollN})</span></button>
+      </div>`;
+    }
+  }
+  return html;
+}
+
+/* ===================== Records — فلٹر شدہ ٹیبل (5 کالم) ===================== */
+function renderFilteredTable(kind){
+  const entries = (state.brandEntries || []).filter(e => e.type === kind || e.type === 'settlement');
+  let html = `<div class="records-header"><div class="info">${esc(state.company)} — ${esc(state.brand)}</div></div>`;
+
+  if(entries.length === 0){
+    html += `<div class="empty-state">${kind==='bag'?'اس برانڈ کے بورے کا کوئی ریکارڈ نہیں':'اس برانڈ کے گولے کا کوئی ریکارڈ نہیں'}</div>`;
+    return html;
+  }
+
+  html += `<div class="records-table-wrap"><table class="records-table filtered-table">${recentColgroup()}<thead><tr>
+    <th>تاریخ</th><th>${kind==='bag'?'بوروں کی تعداد':'گولوں کی تعداد'}</th><th>وزن</th><th>کپڑے کی قسم</th><th>بیلنس</th>
+  </tr></thead><tbody>`;
+
+  entries.forEach(e => {
+    if(e.type === 'settlement'){
+      html += `<tr><td colspan="5" style="color:#1B3E73;font-style:italic;font-size:14px;background:#EEF2F8;">${esc(e.date)} — پچھلا حصہ مکمل</td></tr>`;
+      return;
+    }
+    const bal = parseFloat(e.balance || 0);
+    const balClass = bal >= 0 ? 'bal-pos' : 'bal-neg';
+    const count = kind === 'bag' ? e.bagsCount : e.rollsCount;
+    const weight = kind === 'bag' ? e.weight : e.rollsWeight;
+    html += `<tr>
+      <td>${esc(e.date) || '-'}</td>
+      <td>${esc(count) || '—'}</td>
+      <td>${esc(weight) || '—'}</td>
+      <td>${esc(e.subType) || '—'}</td>
+      <td class="${balClass}">${fmt(bal)}</td>
+    </tr>`;
+  });
+  html += `</tbody></table></div>`;
+  return html;
+}
+
+/* ===================== Entry Options (Long Press) ===================== */
+function renderEntryOptions(){
+  const entry = state.selectedEntry;
+  if(!entry) return;
+  let content = '';
+  if(entry.type === 'settlement'){
+    content = `<div class="sheet-title">پچھلے حساب کا نشان</div>
+      <div class="info-msg">یہ کوئی اینٹری نہیں، صرف نشان ہے۔</div>
+      <button class="popup-btn cancel" data-act="close-options">${iconClose} بند کریں</button>`;
+  } else {
+    content = `<div class="sheet-title">کیا کرنا چاہتے ہیں؟</div>
+      <button class="popup-btn edit" data-act="do-edit">${iconEdit} ترمیم کریں</button>
+      <button class="popup-btn delete" data-act="do-delete">${iconDelete} حذف کریں</button>
+      <button class="popup-btn cancel" data-act="close-options">${iconClose} بند کریں</button>`;
+  }
+  const html = `<div class="overlay" id="entryOptionsOverlay"><div class="sheet-popup">${content}</div></div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', html);
+  bindOverlay('entryOptionsOverlay');
+}
+
+/* ===================== Edit Flow (نام کا مرحلہ ختم — خودکار) ===================== */
+const EDIT_FIELDS = {
+  bag: [
+    ['date','تاریخ','date'], ['gatePassNo','گیٹ پاس نمبر','text'], ['copyNo','کاپی نمبر','text'],
+    ['bagsCount','بوروں کی تعداد','number'], ['weight','بوروں کا وزن','number'], ['subType','برانڈ کی قسم','text'],
+    ['driverName','ڈرائیور کا نام','text'], ['vehicleNo','گاڑی نمبر','text']
+  ],
+  roll: [
+    ['date','تاریخ','date'], ['outGatePassNo','روانگی پاس نمبر','text'], ['copyNo','کاپی نمبر','text'],
+    ['rollsCount','گولوں کی تعداد','number'], ['rollsWeight','گولوں کا وزن','number'], ['subType','برانڈ کی قسم','text'],
+    ['driverName','ڈرائیور کا نام','text'], ['vehicleNo','گاڑی نمبر','text'], ['plantName','پلانٹ کا نام','text']
+  ]
+};
+function bindOverlay(id){
+  document.querySelectorAll('#' + id + ' [data-act]').forEach(el => el.addEventListener('click', onAction));
+}
+function renderEditConfirm(){
+  const html = `<div class="overlay" id="editFlowOverlay"><div class="sheet-popup">
+    <div class="sheet-title">کیا آپ واقعی ترمیم کرنا چاہتے ہیں؟</div>
+    <button class="popup-btn edit" data-act="edit-confirm-yes">${iconCheck} ہاں، ترمیم کریں</button>
+    <button class="popup-btn cancel" data-act="close-options">${iconClose} نہیں</button>
+  </div></div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', html);
+  bindOverlay('editFlowOverlay');
+}
+function renderEditWarning(){
+  const html = `<div class="overlay" id="editFlowOverlay"><div class="sheet-popup">
+    <div class="sheet-title">توجہ فرمائیں</div>
+    <div class="info-msg">آپ یہ اینٹری تبدیل کرنے لگے ہیں۔<br><br>آپ کی پچھلی اینٹری بھی ہمارے پاس موجود ہے۔<br><br>جو اینٹری آپ تبدیل کر رہے ہو، وہ بھی محفوظ ہو جائے گی۔</div>
+    <button class="primary-btn" data-act="edit-warning-ok">ٹھیک ہے، آگے بڑھیں</button>
+    <button class="popup-btn cancel" data-act="close-options" style="margin-top:10px;">${iconClose} بند کریں</button>
+  </div></div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', html);
+  bindOverlay('editFlowOverlay');
+}
+function renderEditForm(){
+  const entry = state.selectedEntry;
+  if(!entry) return;
+  const defs = EDIT_FIELDS[entry.type] || [];
+  let fields = '';
+  defs.forEach(([id, label, type]) => {
+    const v = (entry[id] === undefined || entry[id] === null) ? '' : entry[id];
+    let t = type;
+    if(type === 'date' && !/^\d{4}-\d{2}-\d{2}$/.test(String(v))) t = 'text';
+    const extra = type === 'number' ? ` step="0.01" min="0" inputmode="decimal"` : '';
+    fields += `<div class="field" style="margin-bottom:12px;"><label>${label}</label>
+      <input id="ef_${id}" type="${t}" value="${escAttr(v)}"${extra}></div>`;
+  });
+  const html = `<div class="overlay" id="editFlowOverlay"><div class="sheet-popup">
+    <div class="sheet-title">اینٹری میں ترمیم</div>
+    ${fields}
+    <button class="primary-btn" data-act="edit-form-submit">${iconSave} تبدیلی محفوظ کریں</button>
+    <button class="popup-btn cancel" data-act="close-options" style="margin-top:10px;">${iconClose} بند کریں</button>
+  </div></div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', html);
+  bindOverlay('editFlowOverlay');
+}
+
+/* ===================== Delete Flow (نام کا مرحلہ ختم) ===================== */
+function renderDeleteConfirm(){
+  const html = `<div class="overlay" id="deleteFlowOverlay"><div class="sheet-popup">
+    <div class="sheet-title">کیا آپ واقعی حذف کرنا چاہتے ہیں؟</div>
+    <button class="popup-btn delete" data-act="delete-confirm-yes">${iconCheck} ہاں، حذف کریں</button>
+    <button class="popup-btn cancel" data-act="close-options">${iconClose} نہیں</button>
+  </div></div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', html);
+  bindOverlay('deleteFlowOverlay');
+}
+function renderDeleteWarning(){
+  const html = `<div class="overlay" id="deleteFlowOverlay"><div class="sheet-popup">
+    <div class="sheet-title">توجہ فرمائیں</div>
+    <div class="info-msg">آپ یہ اینٹری ڈیلیٹ کرنے لگے ہیں۔<br><br>اچھی طرح سوچ لیں، پھر ڈیلیٹ کریں۔</div>
+    <button class="primary-btn" data-act="delete-warning-ok" style="background:#B23A2E;">ٹھیک ہے، ڈیلیٹ کریں</button>
+    <button class="popup-btn cancel" data-act="close-options" style="margin-top:10px;">${iconClose} بند کریں</button>
+  </div></div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', html);
+  bindOverlay('deleteFlowOverlay');
+}
+
+/* ===================== Receipt Overlay ===================== */
+function renderReceiptOverlay(entry){
+  const isBag = entry.type === 'bag';
+  const bal = entry._balanceAfter || 0;
+  const row = (k, v) => `<div class="receipt-row"><span class="k">${k}</span><span class="v">${(v === undefined || v === null || v === '') ? '-' : esc(v)}</span></div>`;
+
+  let rows = '';
+  rows += row('کمپنی', entry.company);
+  rows += row('برانڈ', entry.brand);
+  rows += row('تاریخ', entry.date);
+  if(isBag){
+    rows += row('گیٹ پاس نمبر', entry.gatePassNo);
+    rows += row('بوروں کی تعداد', entry.bagsCount);
+    rows += row('بوروں کا وزن', entry.weight);
+  } else {
+    rows += row('روانگی پاس نمبر', entry.outGatePassNo);
+    rows += row('گولوں کی تعداد', entry.rollsCount);
+    rows += row('گولوں کا وزن', entry.rollsWeight);
+    rows += row('پلانٹ کا نام', entry.plantName);
+  }
+  rows += row('برانڈ کی قسم', entry.subType);
+  rows += row('ڈرائیور کا نام', entry.driverName);
+  rows += row('گاڑی نمبر', entry.vehicleNo);
+  rows += row('کاپی نمبر', entry.copyNo);
+
+  const warn = entry._balanceFallback
+    ? `<div style="text-align:center;font-size:12.5px;color:#B23A2E;margin-top:4px;">⚠️ Sheet سے رابطہ نہیں ہوا، بیلنس اس فون کے مقامی حساب سے ہے</div>`
+    : '';
+
+  const overlayHtml = `
+  <div class="overlay" id="receiptOverlay">
+    <div class="receipt-sheet">
+      <div class="receipt-head">
+        <div class="app-name">${APP_NAME}</div>
+        <div class="kind">${isBag ? 'بوروں کی رسید' : 'گولوں کی رسید'}</div>
+      </div>
+      <div class="receipt-divider"></div>
+      ${rows}
+      <div class="receipt-divider"></div>
+      <div class="receipt-balance">
+        <div class="lbl">نیا بیلنس</div>
+        <div class="val" style="color:${bal >= 0 ? '#1E7D4B' : '#B23A2E'}">${fmt(bal)}</div>
+        ${warn}
+      </div>
+      ${state.confirmMode ? `
+        <button class="primary-btn" data-act="confirm-save">${iconCheck} تصدیق کریں اور محفوظ کریں</button>
+        <button class="ghost-btn" data-act="edit-entry">${iconEdit} ترمیم کریں</button>
+      ` : `<button class="ghost-btn" data-act="close-receipt">${iconClose} بند کریں</button>`}
+    </div>
+  </div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', overlayHtml);
+  bindOverlay('receiptOverlay');
+}
+
+/* ===================== Validation ===================== */
+function validate(fields, positive){
+  positive = positive || [];
+  fieldErrors = {};
+  let ok = true;
+  fields.forEach(id => {
+    const el = document.getElementById('f_' + id);
+    const val = el ? el.value : formDraft[id];
+    if(val === undefined || val === null || String(val).trim() === ''){
+      fieldErrors[id] = true; ok = false;
+    } else if(positive.includes(id) && !isNumPositive(val)){
+      fieldErrors[id] = 'صفر سے زیادہ عدد لکھیں'; formDraft[id] = val; ok = false;
+    } else { formDraft[id] = val; }
+  });
+  return ok;
+}
+function collectFormValues(ids){
+  ids.forEach(id => { const el = document.getElementById('f_' + id); if(el) formDraft[id] = el.value; });
+}
+
+/* ===================== بل کا ڈیش بورڈ ===================== */
+function renderBillDashboard(){
+  return `<div style="padding:30px 14px;">
+    <button class="primary-btn" data-act="go-bill-company" style="min-height:110px;font-size:19px;flex-direction:column;gap:12px;">${iconBill}<div>بل بنائیں</div></button>
+    <button class="primary-btn" data-act="go-bill-list-company" style="min-height:110px;font-size:19px;background:var(--navy-2);flex-direction:column;gap:12px;margin-top:20px;">${iconList}<div>بلز دیکھیں</div></button>
+  </div>`;
+}
+function renderBillCompany(){
+  if(state.loadingBillCompanies){
+    return `<div class="skeleton-grid"><div class="skeleton-box"></div><div class="skeleton-box"></div><div class="skeleton-box"></div><div class="skeleton-box"></div></div>`;
+  }
+  let html = `<div class="section-title">کمپنی منتخب کریں</div>`;
+  if(state.loadFailed) return html + errorBox();
+  if(state.usingCache) html += cacheBanner();
+  return html + searchBoxHtml(state.companySearch || '', 'driveBillCompanies', 'bill-pick-company', false);
+}
+function renderBillForm(){
+  const company = state.company;
+  const prevBal = state.billPrevBalance || 0;
+  const balColor = prevBal >= 0 ? 'var(--red)' : 'var(--green)';
+  if(formDraft.date === undefined) formDraft.date = todayStr();
+  return `
+    <div class="dash-section" style="text-align:center;">
+      <div style="font-size:15px;color:var(--muted);font-weight:600;">${iconBusiness} ${esc(company)}</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:8px;">پچھلا بیلنس</div>
+      <div style="font-size:30px;font-weight:800;font-family:'Poppins';color:${balColor};margin-top:6px;">${fmt(prevBal)}</div>
+    </div>
+    <div class="form-grid">
+      ${field('date','تاریخ','date','full')}
+      ${field('kisMalKaBill','کس مال کا بل','text','full')}
+      ${field('denayThey','دینے تھے','number',"min='0' step='0.01' inputmode='decimal'")}
+      ${field('diye','دیے','number',"min='0' step='0.01' inputmode='decimal'")}
+      ${field('kisNeDiya','کس نے دیا','text','full opt')}
+      ${field('tasfeer','تفصیل','text','full opt')}
+    </div>
+    <div class="dash-section" style="text-align:center;margin-top:14px;">
+      <div style="font-size:13px;color:var(--muted);">نیا بیلنس (حساب)</div>
+      <div style="font-size:22px;font-weight:800;font-family:'Poppins';color:var(--navy);margin-top:6px;" id="billPreviewBalance">
+        ${fmt(prevBal + (parseFloat(formDraft.denayThey) || 0) - (parseFloat(formDraft.diye) || 0))}
+      </div>
+    </div>
+    <button class="primary-btn" data-act="preview-bill">${iconBill} بل دیکھیں</button>
+  `;
+}
+function renderBillListCompany(){
+  if(state.loadingBillCompanies){
+    return `<div class="skeleton-grid"><div class="skeleton-box"></div><div class="skeleton-box"></div><div class="skeleton-box"></div><div class="skeleton-box"></div></div>`;
+  }
+  let html = `<div class="section-title">کمپنی منتخب کریں</div>`;
+  if(state.loadFailed) return html + errorBox();
+  if(state.usingCache) html += cacheBanner();
+  return html + searchBoxHtml(state.companySearch || '', 'driveBillCompanies', 'bill-list-pick-company', false);
+}
+function renderBillList(){
+  const company = state.company;
+  if(state.loadingBills){
+    return `<div class="loading-box"><div class="spinner"></div><div>لوڈ ہو رہا ہے...</div></div>`;
+  }
+  if(state.loadFailed) return `<div class="section-title">${esc(company)}</div>` + errorBox();
+
+  const bills = state.bills || [];
+  const currentBalance = state.currentBalance || 0;
+  const balColor = currentBalance >= 0 ? 'var(--red)' : 'var(--green)';
+
+  let html = `
+    <div class="dash-section" style="text-align:center;">
+      <div style="font-size:15px;color:var(--muted);font-weight:600;">${iconBusiness} ${esc(company)}</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:8px;">موجودہ بیلنس</div>
+      <div style="font-size:30px;font-weight:800;font-family:'Poppins';color:${balColor};margin-top:6px;">${fmt(currentBalance)}</div>
+    </div>
+    <div class="records-header">
+      <div class="info">${bills.length} بل</div>
+      <button class="save-btn" data-act="save-bills-image" ${state.savingImage ? 'disabled' : ''}>${iconCamera} ${state.savingImage ? 'محفوظ ہو رہا ہے...' : 'محفوظ'}</button>
+    </div>
+  `;
+
+  if(bills.length === 0){ html += `<div class="empty-state">کوئی بل نہیں</div>`; return html; }
+
+  html += `<div class="records-table-wrap"><table class="records-table"><thead><tr>
+    <th>تاریخ</th><th>کس مال کا</th><th>دینے تھے</th><th>دیے</th><th>بیلنس</th>
+  </tr></thead><tbody>`;
+  bills.forEach((b, idx) => {
+    const bal = parseFloat(b.balance || 0);
+    const balClass = bal >= 0 ? 'bal-neg' : 'bal-pos';
+    html += `<tr data-act="bill-row-longpress" data-idx="${idx}">
+      <td>${esc(b.date) || '-'}</td><td>${esc(b.kisMalKaBill) || '—'}</td>
+      <td>${fmt(b.denayThey || 0)}</td><td>${fmt(b.diye || 0)}</td>
+      <td class="${balClass}">${fmt(bal)}</td>
+    </tr>`;
+  });
+  html += `</tbody></table></div>`;
+  return html;
+}
+function renderBillPreviewOverlay(){
+  const p = state.billPreview;
+  if(!p) return;
+  const balColor = p.balance >= 0 ? '#B23A2E' : '#1E7D4B';
+  const overlayHtml = `
+  <div class="overlay" id="billPreviewOverlay">
+    <div class="receipt-sheet">
+      <div class="receipt-head">
+        <div class="app-name">${APP_NAME}</div>
+        <div class="kind">📃 بل کی تصدیق</div>
+      </div>
+      <div class="receipt-divider"></div>
+      <div class="receipt-row"><span class="k">کمپنی</span><span class="v">${esc(p.company)}</span></div>
+      <div class="receipt-row"><span class="k">تاریخ</span><span class="v">${esc(p.date)}</span></div>
+      <div class="receipt-row"><span class="k">کس مال کا بل</span><span class="v">${esc(p.kisMalKaBill)}</span></div>
+      <div class="receipt-divider"></div>
+      <div class="receipt-row"><span class="k">پچھلا بیلنس</span><span class="v">${fmt(p.prevBalance)}</span></div>
+      <div class="receipt-row"><span class="k">دینے تھے</span><span class="v">${fmt(p.denayThey)}</span></div>
+      <div class="receipt-row"><span class="k">دیے</span><span class="v">${fmt(p.diye)}</span></div>
+      ${p.kisNeDiya ? `<div class="receipt-row"><span class="k">کس نے دیا</span><span class="v">${esc(p.kisNeDiya)}</span></div>` : ''}
+      ${p.tasfeer ? `<div class="receipt-row"><span class="k">تفصیل</span><span class="v">${esc(p.tasfeer)}</span></div>` : ''}
+      <div class="receipt-divider"></div>
+      <div class="receipt-balance"><div class="lbl">نیا بیلنس</div><div class="val" style="color:${balColor}">${fmt(p.balance)}</div></div>
+      <button class="primary-btn" data-act="confirm-bill-save">${iconCheck} تصدیق اور سیو کریں</button>
+      <button class="ghost-btn" data-act="edit-bill-preview">${iconEdit} ترمیم کریں</button>
+      <button class="ghost-btn" data-act="close-bill-preview">${iconClose} بند کریں</button>
+    </div>
+  </div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', overlayHtml);
+  bindOverlay('billPreviewOverlay');
+}
+function renderBillOptions(){
+  const b = state.selectedBill;
+  if(!b) return;
+  const overlayHtml = `<div class="overlay" id="billOptionsOverlay"><div class="sheet-popup">
+    <div class="sheet-title">کیا کرنا چاہتے ہیں؟</div>
+    <button class="popup-btn delete" data-act="bill-do-delete">${iconDelete} حذف کریں</button>
+    <button class="popup-btn cancel" data-act="close-bill-options">${iconClose} بند کریں</button>
+  </div></div>`;
+  document.getElementById('app').insertAdjacentHTML('beforeend', overlayHtml);
+  bindOverlay('billOptionsOverlay');
+}
+
+/* ===================== ڈاؤن لوڈ ہیلپر ===================== */
+function triggerDownload(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+function fitText(ctx, text, maxW){
+  text = String(text === undefined || text === null ? '' : text);
+  if(ctx.measureText(text).width <= maxW) return text;
+  while(text.length > 1 && ctx.measureText(text + '…').width > maxW) text = text.slice(0, -1);
+  return text + '…';
+}
+
+/* ---- تصویر کا پروفیشنل ہیڈر (لوگو کے بغیر پیالہ نما باکس) ---- */
+function drawImageHeader(ctx, width, subLabel1, subVal1, subLabel2, subVal2){
+  ctx.fillStyle = '#10294D';
+  ctx.fillRect(0, 0, width, 128);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 34px Arial';
+  ctx.textAlign = 'center'; ctx.direction = 'ltr';
+  ctx.fillText('ISMAIL KNITTING', width / 2, 52);
+
+  ctx.font = '15px Arial'; ctx.fillStyle = '#B9C6DC'; ctx.textAlign = 'right';
+  const rightX = width - 40;
+  ctx.fillText(subLabel1, rightX, 84);
+  ctx.font = 'bold 17px Arial'; ctx.fillStyle = '#FFFFFF';
+  ctx.fillText(fitText(ctx, subVal1, width * 0.55), rightX - ctx.measureText(subLabel1 + '  ').width, 84);
+
+  if(subLabel2){
+    ctx.font = '15px Arial'; ctx.fillStyle = '#B9C6DC';
+    ctx.fillText(subLabel2, rightX, 110);
+    ctx.font = 'bold 17px Arial'; ctx.fillStyle = '#FFFFFF';
+    ctx.fillText(fitText(ctx, subVal2, width * 0.55), rightX - ctx.measureText(subLabel2 + '  ').width, 110);
+  }
+  return 128;
+}
+function drawImageFooter(ctx, width, y, timeStr){
+  ctx.textAlign = 'center'; ctx.direction='ltr';
+  ctx.font = '13px Arial'; ctx.fillStyle = '#999';
+  ctx.fillText('Time: ' + timeStr, width / 2, y);
+  ctx.font = 'bold 13px Arial'; ctx.fillStyle = '#767267';
+  ctx.fillText('GENERATED BY ISMAIL KNITTING', width / 2, y + 24);
+}
+
+/* ===================== بل کی تصویر بنائیں ===================== */
+function saveBillAsImage(billData){
+  const company = billData.company;
+  const now = new Date().toLocaleString('en-GB', {timeZone: 'Asia/Karachi'});
+  const canvas = document.createElement('canvas');
+  const scale = 2, width = 800, height = 900;
+  canvas.width = width * scale; canvas.height = height * scale;
+  const ctx = canvas.getContext('2d'); ctx.scale(scale, scale);
+
+  ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, width, height);
+  ctx.strokeStyle = '#10294D'; ctx.lineWidth = 4;
+  ctx.strokeRect(15, 15, width - 30, height - 30);
+
+  let y = drawImageHeader(ctx, width, 'Company', company, null, null) + 15;
+
+  ctx.strokeStyle = '#E4E1D6'; ctx.lineWidth = 1; ctx.setLineDash([6, 6]);
+  ctx.beginPath(); ctx.moveTo(40, y); ctx.lineTo(width - 40, y); ctx.stroke(); ctx.setLineDash([]);
+
+  const labels = [
+    ['تاریخ', billData.date], ['کس مال کا بل', billData.kisMalKaBill],
+    ['پچھلا بیلنس', fmt(billData.prevBalance)], ['دینے تھے', fmt(billData.denayThey)],
+    ['دیے', fmt(billData.diye)], ['کس نے دیا', billData.kisNeDiya || '-'], ['تفصیل', billData.tasfeer || '-']
+  ];
+  let yPos = y + 50;
+  ctx.font = 'bold 20px Arial';
+  labels.forEach((row) => {
+    ctx.textAlign = 'right'; ctx.fillStyle = '#767267';
+    ctx.fillText(row[0], width - 50, yPos);
+    ctx.textAlign = 'left'; ctx.fillStyle = '#1A1A1A';
+    ctx.fillText(fitText(ctx, row[1], 470), 50, yPos);
+    yPos += 55;
+  });
+
+  ctx.strokeStyle = '#E4E1D6'; ctx.setLineDash([6, 6]);
+  ctx.beginPath(); ctx.moveTo(40, yPos + 15); ctx.lineTo(width - 40, yPos + 15); ctx.stroke(); ctx.setLineDash([]);
+
+  yPos += 70;
+  ctx.textAlign = 'center'; ctx.font = '18px Arial'; ctx.fillStyle = '#767267';
+  ctx.fillText('نیا بیلنس', width / 2, yPos);
+  yPos += 55;
+  ctx.font = 'bold 48px Arial'; ctx.fillStyle = billData.balance >= 0 ? '#B23A2E' : '#1E7D4B';
+  ctx.fillText(fmt(billData.balance), width / 2, yPos);
+
+  drawImageFooter(ctx, width, height - 60, now);
+
+  canvas.toBlob(function(blob){
+    if(!blob){ showToast('تصویر نہیں بن سکی'); return; }
+    triggerDownload(blob, 'Bill_' + safeFileName(company) + '_' + Date.now() + '.png');
+  }, 'image/png');
+}
+
+/* ---- بلوں کی فہرست کی تصویر (تاریخ|کس مال کا بل|دینے تھے|دیے|بیلنس) ---- */
+function drawBillsListPage(bills, company, pageNo, pageCount){
+  const now = new Date().toLocaleString('en-GB', {timeZone: 'Asia/Karachi'});
+  const scale = 2, width = 800, headerHeight = 128, footerHeight = 70;
+  const rowHeight = 55, headerRowHeight = 55;
+  const totalHeight = headerHeight + 10 + headerRowHeight + (bills.length * rowHeight) + footerHeight + 20;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width * scale; canvas.height = totalHeight * scale;
+  const ctx = canvas.getContext('2d'); ctx.scale(scale, scale);
+  ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, width, totalHeight);
+
+  drawImageHeader(ctx, width, 'Company', company, pageCount>1?'Page':null, pageCount>1?(pageNo+' / '+pageCount):null);
+
+  const colWidths = [130, 220, 130, 130, 150];
+  const colLabels = ['تاریخ', 'کس مال کا بل', 'دینے تھے', 'دیے', 'بیلنس'];
+  const tableStartY = headerHeight + 10;
+
+  ctx.fillStyle = '#1B3E73'; ctx.fillRect(20, tableStartY, width - 40, headerRowHeight);
+  ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 1;
+  let xPos = width - 20;
+  ctx.textAlign = 'center'; ctx.font = 'bold 14px Arial'; ctx.fillStyle = '#FFFFFF';
+  for(let i = 0; i < colLabels.length; i++){
+    xPos -= colWidths[i];
+    ctx.strokeRect(xPos, tableStartY, colWidths[i], headerRowHeight);
+    ctx.fillText(colLabels[i], xPos + colWidths[i] / 2, tableStartY + 33);
+  }
+
+  let yPos = tableStartY + headerRowHeight;
+  bills.forEach(b => {
+    ctx.fillStyle = '#FFFFFF'; ctx.fillRect(20, yPos, width - 40, rowHeight);
+    const bal = parseFloat(b.balance || 0);
+    const cells = [b.date, b.kisMalKaBill || '—', fmt(b.denayThey||0), fmt(b.diye||0), fmt(bal)];
+    let cx = width - 20;
+    for(let i = 0; i < 5; i++){
+      cx -= colWidths[i];
+      ctx.strokeStyle = '#E4E1D6'; ctx.strokeRect(cx, yPos, colWidths[i], rowHeight);
+      if(i === 4){ ctx.fillStyle = bal >= 0 ? '#B23A2E' : '#1E7D4B'; ctx.font = 'bold 16px Arial'; }
+      else { ctx.fillStyle = '#1A1A1A'; ctx.font = '15px Arial'; }
+      ctx.textAlign = 'center';
+      ctx.fillText(fitText(ctx, cells[i], colWidths[i] - 10), cx + colWidths[i] / 2, yPos + 35);
+    }
+    yPos += rowHeight;
+  });
+
+  drawImageFooter(ctx, width, yPos + 34, now);
+  return canvas;
+}
+async function saveBillsAsImage(){
+  const st = state;
+  state.savingImage = true; render();
+  showToast('ڈیٹا لایا جا رہا ہے...');
+  const fresh = await fetchBillsFromDrive(state.company);
+  if(st !== state) return;
+  let bills = null;
+  if(fresh !== null){ bills = fresh.bills; cacheSet('bills:'+state.company, fresh); }
+  else {
+    const cached = cacheGet('bills:'+state.company);
+    if(cached){ bills = cached.bills; showToast('⚠️ تازہ ڈیٹا نہ مل سکا، محفوظ شدہ ڈیٹا سے تصویر بن رہی ہے'); }
+  }
+  if(!bills || bills.length === 0){
+    state.savingImage = false; render();
+    showToast(bills === null ? 'ڈیٹا نہ مل سکا' : 'کوئی بل نہیں'); return;
+  }
+  showToast('📸 تصویر بن رہی ہے...');
+  const PER_PAGE = 50;
+  const pages = [];
+  for(let i=0;i<bills.length;i+=PER_PAGE) pages.push(bills.slice(i,i+PER_PAGE));
+  const base = safeFileName(state.company) + '_bills_' + Date.now();
+  let idx = 0;
+  const next = () => {
+    if(idx >= pages.length){
+      state.savingImage = false; render(); playSound('success');
+      showToast(pages.length>1 ? ('✅ '+pages.length+' تصاویر محفوظ ہو گئیں') : '✅ تصویر محفوظ ہو گئی');
+      return;
+    }
+    const canvas = drawBillsListPage(pages[idx], state.company, idx+1, pages.length);
+    const name = base + (pages.length>1 ? '_'+(idx+1) : '') + '.png';
+    idx++;
+    canvas.toBlob(function(blob){
+      if(!blob){ showToast('تصویر نہیں بن سکی'); return; }
+      triggerDownload(blob, name);
+      setTimeout(next, 700);
+    }, 'image/png');
+  };
+  next();
+}
+
+/* ===================== Loading Helpers (fetch → fallback to cache) ===================== */
+async function loadCompanies(){
+  const st = state;
+  state.loadingCompanies = true; state.loadFailed = false; state.usingCache = false;
+  render();
+  const companies = await fetchCompaniesFromDrive();
+  if(st !== state) return;
+  if(companies === null){
+    const cached = cacheGet('companies');
+    if(cached){ state.driveCompanies = cached; state.usingCache = true; }
+    else { state.loadFailed = true; state.driveCompanies = []; }
+  } else { state.driveCompanies = companies; cacheSet('companies', companies); }
+  state.loadingCompanies = false;
+  render();
+}
+async function loadBrands(company){
+  const st = state;
+  state.loadingBrands = true; state.loadFailed = false; state.usingCache = false;
+  render();
+  const brands = await fetchBrandsFromDrive(company);
+  if(st !== state) return;
+  if(brands === null){
+    const cached = cacheGet('brands:'+company);
+    if(cached){ state.driveBrands = cached; state.usingCache = true; }
+    else { state.loadFailed = true; state.driveBrands = []; }
+  } else { state.driveBrands = brands; cacheSet('brands:'+company, brands); }
+  state.loadingBrands = false;
+  render();
+}
+async function loadBillCompanies(){
+  const st = state;
+  state.loadingBillCompanies = true; state.loadFailed = false; state.usingCache = false;
+  render();
+  const companies = await fetchBillCompaniesFromDrive();
+  if(st !== state) return;
+  if(companies === null){
+    const cached = cacheGet('billCompanies');
+    if(cached){ state.driveBillCompanies = cached; state.usingCache = true; }
+    else { state.loadFailed = true; state.driveBillCompanies = []; }
+  } else { state.driveBillCompanies = companies; cacheSet('billCompanies', companies); }
+  state.loadingBillCompanies = false;
+  render();
+}
+async function reloadBrandEntries(){
+  const st = state;
+  state.loadingData = true; state.loadFailed = false; state.usingCache = false;
+  render();
+  const entries = await fetchBrandData(state.company, state.brand);
+  if(st !== state) return;
+  const key = 'brandData:'+state.company+':'+state.brand;
+  if(entries === null){
+    const cached = cacheGet(key);
+    if(cached){ state.brandEntries = cached; state.usingCache = true; }
+    else { state.loadFailed = true; state.brandEntries = []; }
+  } else { state.brandEntries = entries; cacheSet(key, entries); }
+  state.loadingData = false;
+  render();
+}
+async function reloadBills(){
+  const st = state;
+  state.loadingBills = true; state.loadFailed = false; state.usingCache = false;
+  render();
+  const r = await fetchBillsFromDrive(state.company);
+  if(st !== state) return;
+  const key = 'bills:'+state.company;
+  if(r === null){
+    const cached = cacheGet(key);
+    if(cached){ state.bills = cached.bills; state.currentBalance = cached.currentBalance; state.usingCache = true; }
+    else { state.loadFailed = true; state.bills = []; state.currentBalance = 0; }
+  } else { state.bills = r.bills; state.currentBalance = r.currentBalance; cacheSet(key, r); }
+  state.loadingBills = false;
+  render();
+}
+function retryLoad(){
+  const s = state.screen;
+  if(s === 'pick-company' || s === 'records' || s === 'new-brand') loadCompanies();
+  else if(s === 'pick-brand') loadBrands(state.company);
+  else if(s === 'records-brand-list') loadBrands(state.company);
+  else if(s === 'bill-company' || s === 'bill-list-company') loadBillCompanies();
+  else if(s === 'bill-list') reloadBills();
+}
+
+/* ===================== Edit / Delete (Entries — نام خودکار) ===================== */
+async function performEdit(){
+  const entry = state.selectedEntry;
+  const newData = state.editNewData || entry;
+  removeOverlay('editFlowOverlay');
+  showToast('ترمیم بھیجی جا رہی ہے...');
+  const result = await sendToSheet({
+    action: 'update', company: state.company, brand: state.brand, type: entry.type,
+    entryId: entry.id, oldData: entry, newData: newData
+  });
+  state.showEntryOptions = false; state.selectedEntry = null; state.editNewData = null;
+  if(result.status === 'ok'){
+    const i = data.entries.findIndex(x => x.id === entry.id);
+    if(i >= 0){ data.entries[i] = { ...data.entries[i], ...newData }; await persist(); }
+    playSound('success'); showToast('✅ اینٹری ترمیم ہو گئی');
+  } else { playSound('error'); showToast('❌ ترمیم نہیں ہو سکی'); }
+  await reloadBrandEntriesForBrandList();
+}
+async function performDelete(){
+  const entry = state.selectedEntry;
+  removeOverlay('deleteFlowOverlay');
+  showToast('حذف بھیجا جا رہا ہے...');
+  const result = await sendToSheet({
+    action: 'delete', company: state.company, brand: state.brand, type: entry.type,
+    entryId: entry.id, oldData: entry
+  });
+  state.showEntryOptions = false; state.selectedEntry = null;
+  if(result.status === 'ok'){
+    data.entries = data.entries.filter(x => x.id !== entry.id);
+    await persist(); playSound('success'); showToast('✅ اینٹری حذف ہو گئی');
+  } else { playSound('error'); showToast('❌ حذف نہیں ہو سکی'); }
+  await reloadBrandEntriesForBrandList();
+}
+async function reloadBrandEntriesForBrandList(){
+  /* ریکارڈ کی فلٹر شدہ سکرین پر ہوں تو وہیں تازہ کریں */
+  if(state.screen.indexOf('records') === 0 && state.brand){
+    await reloadBrandEntries();
+  }
+}
+
+/* ===================== Remove Overlay ===================== */
+function removeOverlay(id){
+  const el = document.getElementById(id);
+  if(el) el.remove();
+}
+
+/* ===================== ٹیبل کو تصویر بنائیں (Records — combined 7 cols) ===================== */
+function buildTableRows(entries){
+  const rows = [];
+  (entries || []).forEach(e => {
+    if(e.type === 'settlement'){ rows.push({ settle: true, text: (e.date || '') + ' — پچھلا حصہ مکمل' }); return; }
+    const bal = parseFloat(e.balance || 0);
+    rows.push({
+      settle: false, bal: bal,
+      cells: [
+        String(e.date || '-'),
+        e.type === 'bag' ? String(e.bagsCount || '—') : '—',
+        e.type === 'bag' ? String(e.weight || '—') : '—',
+        e.type === 'roll' ? String(e.rollsCount || '—') : '—',
+        e.type === 'roll' ? String(e.rollsWeight || '—') : '—',
+        String(e.subType || '—'),
+        fmt(bal)
+      ]
+    });
+  });
+  return rows;
+}
+function drawTablePage(pageRows, company, brand, pageNo, pageCount){
+  const now = new Date().toLocaleString('en-GB', {timeZone: 'Asia/Karachi'});
+  const scale = 2, width = 900, headerHeight = 128, footerHeight = 70, rowHeight = 55, headerRowHeight = 60;
+  const totalHeight = headerHeight + 10 + headerRowHeight + (pageRows.length * rowHeight) + footerHeight + 20;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width * scale; canvas.height = totalHeight * scale;
+  const ctx = canvas.getContext('2d'); ctx.scale(scale, scale);
+  ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, width, totalHeight);
+
+  drawImageHeader(ctx, width, 'Company', company, 'Brand', brand + (pageCount>1?('  (Page '+pageNo+'/'+pageCount+')'):''));
+
+  const colWidths = [100, 90, 100, 90, 100, 160, 130];
+  const colLabels = ['تاریخ', 'بورے', 'بوروں کا وزن', 'گولے', 'گولوں کا وزن', 'کپڑے کی قسم', 'بیلنس'];
+  const tableStartY = headerHeight + 10;
+
+  ctx.fillStyle = '#1B3E73'; ctx.fillRect(20, tableStartY, width - 40, headerRowHeight);
+  ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 1;
+  let xPos = width - 20;
+  ctx.textAlign = 'center'; ctx.font = 'bold 13px Arial'; ctx.fillStyle = '#FFFFFF';
+  for(let i = 0; i < colLabels.length; i++){
+    xPos -= colWidths[i];
+    ctx.strokeRect(xPos, tableStartY, colWidths[i], headerRowHeight);
+    ctx.fillText(colLabels[i], xPos + colWidths[i] / 2, tableStartY + 36);
+  }
+
+  let yPos = tableStartY + headerRowHeight;
+  pageRows.forEach(r => {
+    ctx.fillStyle = r.settle ? '#EEF2F8' : '#FFFFFF';
+    ctx.fillRect(20, yPos, width - 40, rowHeight);
+    ctx.strokeStyle = '#E4E1D6'; ctx.strokeRect(20, yPos, width - 40, rowHeight);
+    if(r.settle){
+      ctx.fillStyle = '#1B3E73'; ctx.font = 'italic 15px Arial'; ctx.textAlign = 'center';
+      ctx.fillText(r.text, width / 2, yPos + 34);
+    } else {
+      let cx = width - 20;
+      for(let i = 0; i < 7; i++){
+        cx -= colWidths[i];
+        ctx.strokeStyle = '#E4E1D6'; ctx.strokeRect(cx, yPos, colWidths[i], rowHeight);
+        if(i === 6){ ctx.fillStyle = r.bal >= 0 ? '#1E7D4B' : '#B23A2E'; ctx.font = 'bold 16px Arial'; }
+        else { ctx.fillStyle = '#1A1A1A'; ctx.font = '14px Arial'; }
+        ctx.textAlign = 'center';
+        ctx.fillText(fitText(ctx, r.cells[i], colWidths[i] - 8), cx + colWidths[i] / 2, yPos + 35);
+      }
+    }
+    yPos += rowHeight;
+  });
+
+  drawImageFooter(ctx, width, yPos + 34, now);
+  return canvas;
+}
+async function saveRecordsImage(){
+  const st = state;
+  state.savingImage = true; render();
+  showToast('ڈیٹا لایا جا رہا ہے...');
+  const fresh = await fetchBrandData(state.company, state.brand);
+  if(st !== state) return;
+  let entries = null;
+  const key = 'brandData:'+state.company+':'+state.brand;
+  if(fresh !== null){ entries = fresh; cacheSet(key, fresh); state.brandEntries = fresh; }
+  else {
+    const cached = cacheGet(key);
+    if(cached){ entries = cached; showToast('⚠️ تازہ ڈیٹا نہ مل سکا، محفوظ شدہ ڈیٹا سے تصویر بن رہی ہے'); }
+  }
+  if(!entries || entries.length === 0){
+    state.savingImage = false; render();
+    showToast(entries === null ? 'ڈیٹا نہ مل سکا' : 'کوئی ریکارڈ نہیں'); return;
+  }
+  showToast('📸 تصویر بن رہی ہے...');
+  const rows = buildTableRows(entries);
+  const PER_PAGE = 50;
+  const pages = [];
+  for(let i = 0; i < rows.length; i += PER_PAGE) pages.push(rows.slice(i, i + PER_PAGE));
+  const base = safeFileName(state.company + '_' + state.brand) + '_' + Date.now();
+  let idx = 0;
+  const next = () => {
+    if(idx >= pages.length){
+      state.savingImage = false; render(); playSound('success');
+      showToast(pages.length > 1 ? ('✅ ' + pages.length + ' تصاویر محفوظ ہو گئیں') : '✅ تصویر محفوظ ہو گئی');
+      return;
+    }
+    const canvas = drawTablePage(pages[idx], state.company, state.brand, idx + 1, pages.length);
+    const name = base + (pages.length > 1 ? '_' + (idx + 1) : '') + '.png';
+    idx++;
+    canvas.toBlob(function(blob){
+      if(!blob){ showToast('تصویر نہیں بن سکی'); return; }
+      triggerDownload(blob, name);
+      setTimeout(next, 700);
+    }, 'image/png');
+  };
+  next();
+}
+
+/* ===================== اینٹری کا پریویو ===================== */
+async function previewEntry(type, ids){
+  const st = state;
+  showToast('بیلنس چیک ہو رہا ہے...');
+  const draft = { id: uid(), type: type, company: state.company, brand: state.brand };
+  ids.forEach(k => draft[k] = formDraft[k]);
+  const cur = await getCurrentBalance(state.company, state.brand);
+  if(st !== state) return;
+  const delta = type === 'bag' ? (parseFloat(draft.weight) || 0) : -(parseFloat(draft.rollsWeight) || 0);
+  draft._balanceAfter = cur.balance + delta;
+  if(!cur.fromSheet) draft._balanceFallback = true;
+  state.preview = draft; state.confirmMode = true;
+  render();
+}
+
+/* ===================== onAction ===================== */
+async function onAction(e){
+  const el = e.currentTarget;
+  const act = el.getAttribute('data-act');
+
+  /* ---------- PIN Login ---------- */
+  if(act === 'pin-submit'){
+    const inp = document.getElementById('pinInput');
+    const pin = inp ? inp.value.trim() : '';
+    if(!pin){ fieldErrors.pin = true; render(); return; }
+    const btn = document.getElementById('pinSubmitBtn');
+    if(btn) btn.disabled = true;
+    const result = await doLogin(pin);
+    if(result.status === 'ok'){
+      saveAuth({ token: result.token, name: result.name, role: result.role, exp: result.exp });
+      fieldErrors = {}; playSound('success'); render();
+      await loadData();
+    } else {
+      fieldErrors.pin = result.message || true;
+      playSound('error'); render();
+    }
+    return;
+  }
+
+  /* ---------- Bottom Bar ---------- */
+  if(act === 'bb-home'){ go('home'); return; }
+  if(act === 'bb-bag'){ go('pick-company', { kind: 'bag', loadingCompanies: true }); loadCompanies(); return; }
+  if(act === 'bb-roll'){ go('pick-company', { kind: 'roll', loadingCompanies: true }); loadCompanies(); return; }
+  if(act === 'bb-add'){ go('new-company'); return; }
+  if(act === 'bb-bill'){
+    if(!auth || auth.role !== 'owner') return;
+    go('bill-dashboard'); return;
+  }
+  if(act === 'bb-records'){ go('records', { loadingCompanies: true }); loadCompanies(); return; }
+
+  /* ---------- Retry ---------- */
+  if(act === 'retry-load'){ retryLoad(); return; }
+
+  /* ---------- Profile / Settings ---------- */
+  if(act === 'open-profile'){ go('settings'); return; }
+  if(act === 'set-font'){
+    const size = el.getAttribute('data-size');
+    data.settings.fontScale = size; await persist(); applyFontScale(); render(); return;
+  }
+  if(act === 'clear-local-data'){
+    const n = (data.pending || []).length;
+    const msg = n > 0
+      ? ('ابھی ' + n + ' اینٹریاں Sheet پر نہیں پہنچیں، وہ محفوظ رہیں گی۔ باقی مقامی ڈیٹا صاف کریں؟ (Sheet پر اثر نہیں)')
+      : 'کیا آپ واقعی سارا مقامی ڈیٹا صاف کرنا چاہتے ہیں؟ (Sheet پر اثر نہیں)';
+    if(!(await askConfirm(msg))) return;
+    data.entries = data.entries.filter(e2 => data.pending.some(p => p.id === e2.id));
+    try{
+      Object.keys(localStorage).filter(k => k.indexOf('cache:') === 0).forEach(k => localStorage.removeItem(k));
+    }catch(err){}
+    await persist(); playSound('success'); showToast('مقامی ڈیٹا صاف ہو گیا'); render(); return;
+  }
+
+  /* ---------- Back ---------- */
+  if(act === 'back'){
+    const s = state.screen;
+    if(s === 'settings') go('home');
+    else if(s === 'pick-company') go('home');
+    else if(s === 'pick-brand'){ go('pick-company', { kind: state.kind, loadingCompanies: true }); loadCompanies(); }
+    else if(s === 'form') go('pick-brand', { kind: state.kind, company: state.company, brand: state.brand, driveBrands: state.driveBrands, recentEntries: state.recentEntries });
+    else if(s === 'records') go('home');
+    else if(s === 'records-brand-list'){ go('records', { loadingCompanies: true }); loadCompanies(); }
+    else if(s === 'records-table-bag' || s === 'records-table-roll'){
+      go('records-brand-list', { company: state.company, brand: state.brand, driveBrands: state.driveBrands, brandEntries: state.brandEntries });
+    }
+    else if(s === 'bill-dashboard') go('home');
+    else if(s === 'bill-company') go('bill-dashboard');
+    else if(s === 'bill-form'){ go('bill-company', { loadingBillCompanies: true }); loadBillCompanies(); }
+    else if(s === 'bill-list-company') go('bill-dashboard');
+    else if(s === 'bill-list'){ go('bill-list-company', { loadingBillCompanies: true }); loadBillCompanies(); }
+    else if(s === 'new-company') go('home');
+    else if(s === 'new-brand'){
+      if(state.company){ go('new-brand', { loadingCompanies: true }); loadCompanies(); }
+      else go('home');
+    }
+    return;
+  }
+
+  /* ---------- Pick Company ---------- */
+  if(act === 'pick-company'){ state.company = el.getAttribute('data-name'); render(); return; }
+  if(act === 'next-to-brand'){
+    if(!state.company){ playSound('error'); showToast('پہلے کمپنی منتخب کریں'); return; }
+    go('pick-brand', { kind: state.kind, company: state.company, loadingBrands: true });
+    loadBrands(state.company);
+    return;
+  }
+
+  /* ---------- Pick Brand ---------- */
+  if(act === 'pick-brand'){
+    const st = state;
+    const brand = el.getAttribute('data-name');
+    state.brand = brand; state.loadingRecent = true; state.recentFailed = false;
+    render();
+    const entries = await fetchRecentEntries(state.company, brand, 15);
+    if(st !== state || state.brand !== brand) return;
+    if(entries === null){ state.recentFailed = true; state.recentEntries = []; }
+    else state.recentEntries = entries;
+    state.loadingRecent = false; render();
+    return;
+  }
+  if(act === 'next-to-form'){
+    if(!state.company || !state.brand){ playSound('error'); showToast('کمپنی اور برانڈ منتخب کریں'); return; }
+    go('form', { kind: state.kind, company: state.company, brand: state.brand });
+    return;
+  }
+  if(act === 'settle'){
+    if(!state.brand){ playSound('error'); showToast('پہلے برانڈ منتخب کریں'); return; }
+    if(!(await askConfirm('کیا آپ واقعی پچھلا حساب مکمل کر کے بیلنس زیرو سے شروع کرنا چاہتے ہیں؟'))) return;
+    const company = state.company, brand = state.brand;
+    const settlement = { id: uid(), type: 'settlement', company: company, brand: brand, date: todayStr() };
+    data.entries.push(settlement); data.pending.push(settlement);
+    await persist(); playSound('success'); showToast('پچھلا حساب مکمل کر دیا گیا');
+    await flushPending(true);
+    const st = state;
+    const entries = await fetchRecentEntries(company, brand, 15);
+    if(st === state && state.brand === brand){
+      if(entries !== null){ state.recentEntries = entries; state.recentFailed = false; }
+      render();
+    }
+    return;
+  }
+
+  /* ---------- Preview Bag / Roll ---------- */
+  if(act === 'preview-bag'){
+    const ids = ['date','gatePassNo','copyNo','bagsCount','weight','subType','driverName','vehicleNo'];
+    collectFormValues(ids);
+    if(!validate(ids, ['bagsCount','weight'])){ playSound('error'); render(); return; }
+    await previewEntry('bag', ids);
+    return;
+  }
+  if(act === 'preview-roll'){
+    const ids = ['date','outGatePassNo','copyNo','rollsCount','rollsWeight','subType','driverName','vehicleNo','plantName'];
+    collectFormValues(ids);
+    if(!validate(ids, ['rollsCount','rollsWeight'])){ playSound('error'); render(); return; }
+    await previewEntry('roll', ids);
+    return;
+  }
+
+  /* ---------- Confirm Save (Entry) ---------- */
+  if(act === 'confirm-save'){
+    if(!state.preview) return;
+    const entry = { ...state.preview };
+    delete entry._balanceAfter; delete entry._balanceFallback;
+    state.preview = null;
+    const kind = state.kind;
+    data.entries.push(entry); data.pending.push(entry);
+    await persist();
+    formDraft = {}; fieldErrors = {};
+    playSound('success'); showToast('محفوظ ہو رہا ہے...');
+    go('pick-company', { kind: kind, loadingCompanies: true });
+    loadCompanies();
+    await flushPending(true);
+    if(data.pending.some(p => p.id === entry.id)){
+      showToast('اینٹری فون میں محفوظ ہے، انٹرنیٹ آتے ہی Sheet پر خود بھیج دی جائے گی');
+    } else { showToast('✅ اندراج محفوظ ہو گیا'); }
+    return;
+  }
+  if(act === 'edit-entry'){ state.preview = null; render(); return; }
+  if(act === 'close-receipt'){ state.preview = null; render(); return; }
+
+  /* ---------- Records ---------- */
+  if(act === 'rec-open-company'){
+    const company = el.getAttribute('data-name');
+    go('records-brand-list', { company: company, loadingBrands: true });
+    loadBrands(company);
+    return;
+  }
+  if(act === 'rec-open-brand'){
+    const brand = el.getAttribute('data-name');
+    state.brand = brand; state.loadingData = true; render();
+    await reloadBrandEntries();
+    return;
+  }
+  if(act === 'rec-filter-bag'){ go('records-table-bag', { company: state.company, brand: state.brand, driveBrands: state.driveBrands, brandEntries: state.brandEntries }); return; }
+  if(act === 'rec-filter-roll'){ go('records-table-roll', { company: state.company, brand: state.brand, driveBrands: state.driveBrands, brandEntries: state.brandEntries }); return; }
+  if(act === 'save-records-image'){ if(state.savingImage) return; saveRecordsImage(); return; }
+  if(act === 'save-bills-image'){ if(state.savingImage) return; saveBillsAsImage(); return; }
+
+  /* ---------- Long Press Options (Entry) ---------- */
+  if(act === 'close-options'){
+    state.showEntryOptions = false; state.selectedEntry = null;
+    removeOverlay('entryOptionsOverlay'); render(); return;
+  }
+  if(act === 'do-edit'){ state.showEntryOptions = false; removeOverlay('entryOptionsOverlay'); renderEditConfirm(); return; }
+  if(act === 'edit-confirm-yes'){ removeOverlay('editFlowOverlay'); renderEditWarning(); return; }
+  if(act === 'edit-warning-ok'){ removeOverlay('editFlowOverlay'); renderEditForm(); return; }
+  if(act === 'edit-form-submit'){
+    const entry = state.selectedEntry;
+    if(!entry) return;
+    const defs = EDIT_FIELDS[entry.type] || [];
+    const newData = { ...entry };
+    let changed = false;
+    for(const [id, label, type] of defs){
+      const inp = document.getElementById('ef_' + id);
+      if(!inp) continue;
+      const val = inp.value.trim();
+      if(id === 'date' && !val){ playSound('error'); showToast('تاریخ لکھیں'); return; }
+      if(id === 'subType' && !val){ playSound('error'); showToast('برانڈ کی قسم لکھیں'); return; }
+      if(type === 'number' && !isNumPositive(val)){ playSound('error'); showToast(label + ': صفر سے زیادہ عدد لکھیں'); return; }
+      const old = (entry[id] === undefined || entry[id] === null) ? '' : String(entry[id]);
+      if(old !== val) changed = true;
+      newData[id] = val;
+    }
+    if(!changed){ showToast('کوئی تبدیلی نہیں کی گئی'); return; }
+    state.editNewData = newData;
+    await performEdit();
+    return;
+  }
+  if(act === 'do-delete'){ state.showEntryOptions = false; removeOverlay('entryOptionsOverlay'); renderDeleteConfirm(); return; }
+  if(act === 'delete-confirm-yes'){ removeOverlay('deleteFlowOverlay'); renderDeleteWarning(); return; }
+  if(act === 'delete-warning-ok'){ await performDelete(); return; }
+
+  /* ---------- نئی کمپنی / نیا برانڈ ---------- */
+  if(act === 'tab-new-company'){ go('new-company'); return; }
+  if(act === 'tab-new-brand'){ go('new-brand', { loadingCompanies: true }); loadCompanies(); return; }
+
+  if(act === 'save-new-company-page'){
+    if(state.saving) return;
+    const compName = document.getElementById('f_newCompanyName').value.trim().replace(/\s+/g, ' ');
+    const brandName = document.getElementById('f_newBrandName').value.trim().replace(/\s+/g, ' ');
+    formDraft.newCompanyName = compName; formDraft.newBrandName = brandName;
+    if(!compName){ playSound('error'); showToast('کمپنی کا نام لکھیں'); return; }
+    if(!brandName){ playSound('error'); showToast('برانڈ کا نام لکھیں'); return; }
+    state.saving = true;
+    try{
+      showToast('چیک ہو رہا ہے...');
+      const existing = await fetchCompaniesFromDrive();
+      if(existing === null){ playSound('error'); showToast('Sheet سے رابطہ نہیں ہو سکا، دوبارہ کوشش کریں'); return; }
+      if(existing.some(c => String(c).trim().toLowerCase() === compName.toLowerCase())){
+        playSound('error'); showToast('یہ کمپنی پہلے سے موجود ہے'); return;
+      }
+      showToast('محفوظ ہو رہا ہے...');
+      const result = await createBrandOnDrive(compName, [brandName]);
+      if(result.status === 'ok' && result.success !== false){
+        playSound('success'); showToast('✅ کمپنی اور برانڈ بن گئے'); go('home');
+      } else { playSound('error'); showToast(result.message || 'مسئلہ ہوا'); }
+    } finally { state.saving = false; }
+    return;
+  }
+  if(act === 'brand-page-pick-company'){ state.company = el.getAttribute('data-name'); state.newBrandList = ['']; render(); return; }
+  if(act === 'brand-change-company'){ go('new-brand', { loadingCompanies: true }); loadCompanies(); return; }
+  if(act === 'add-brand-field'){ collectBrandInputs(); state.newBrandList.push(''); render(); return; }
+  if(act === 'remove-brand-field'){
+    collectBrandInputs();
+    const idx = parseInt(el.getAttribute('data-idx'), 10);
+    if(state.newBrandList && state.newBrandList.length > 1){ state.newBrandList.splice(idx, 1); render(); }
+    return;
+  }
+  if(act === 'save-new-brand-page'){
+    if(state.saving) return;
+    collectBrandInputs();
+    const seen = new Set(); const cleanBrands = [];
+    (state.newBrandList || []).forEach(b => {
+      const v = String(b).trim().replace(/\s+/g, ' ');
+      if(v && !seen.has(v.toLowerCase())){ seen.add(v.toLowerCase()); cleanBrands.push(v); }
+    });
+    if(cleanBrands.length === 0){ playSound('error'); showToast('کم از کم ایک برانڈ لکھیں'); return; }
+    state.saving = true;
+    try{
+      showToast('چیک ہو رہا ہے...');
+      const existing = await fetchBrandsFromDrive(state.company);
+      if(existing === null){ playSound('error'); showToast('Sheet سے رابطہ نہیں ہو سکا، دوبارہ کوشش کریں'); return; }
+      const have = new Set(existing.map(b => String(b).trim().toLowerCase()));
+      const fresh = cleanBrands.filter(b => !have.has(b.toLowerCase()));
+      const dupCount = cleanBrands.length - fresh.length;
+      if(fresh.length === 0){ playSound('error'); showToast('یہ برانڈ اس کمپنی میں پہلے سے موجود ہیں'); return; }
+      showToast('محفوظ ہو رہا ہے...');
+      const result = await createBrandOnDrive(state.company, fresh);
+      if(result.status === 'ok' && result.success !== false){
+        playSound('success');
+        showToast('✅ برانڈ بن گئے' + (dupCount ? (' (' + dupCount + ' پہلے سے موجود تھے)') : ''));
+        go('home');
+      } else { playSound('error'); showToast(result.message || 'مسئلہ ہوا'); }
+    } finally { state.saving = false; }
+    return;
+  }
+
+  /* ---------- Bill ---------- */
+  if(act === 'go-bill-company'){ go('bill-company', { loadingBillCompanies: true }); loadBillCompanies(); return; }
+  if(act === 'go-bill-list-company'){ go('bill-list-company', { loadingBillCompanies: true }); loadBillCompanies(); return; }
+  if(act === 'bill-pick-company'){
+    const company = el.getAttribute('data-name');
+    showToast('پچھلا بیلنس چیک ہو رہا ہے...');
+    const result = await fetchBillsFromDrive(company);
+    if(result === null){ playSound('error'); showToast('Sheet سے پچھلا بیلنس نہیں مل سکا، دوبارہ کوشش کریں'); return; }
+    go('bill-form', { company: company, billPrevBalance: result.currentBalance || 0 });
+    return;
+  }
+  if(act === 'preview-bill'){
+    const ids = ['date','kisMalKaBill','denayThey','diye','kisNeDiya','tasfeer'];
+    collectFormValues(ids);
+    const required = ['date','kisMalKaBill','denayThey','diye'];
+    fieldErrors = {}; let ok = true;
+    required.forEach(id => {
+      if(formDraft[id] === undefined || formDraft[id] === null || String(formDraft[id]).trim() === ''){ fieldErrors[id] = true; ok = false; }
+    });
+    ['denayThey','diye'].forEach(id => {
+      if(!fieldErrors[id]){
+        const n = parseFloat(formDraft[id]);
+        if(isNaN(n) || n < 0){ fieldErrors[id] = 'درست عدد لکھیں (منفی نہیں)'; ok = false; }
+      }
+    });
+    if(ok && (parseFloat(formDraft.denayThey) || 0) === 0 && (parseFloat(formDraft.diye) || 0) === 0){
+      fieldErrors.denayThey = 'دینے تھے یا دیے میں سے ایک صفر سے زیادہ ہو'; ok = false;
+    }
+    if(!ok){ playSound('error'); render(); return; }
+    const prevBal = state.billPrevBalance || 0;
+    const denayThey = parseFloat(formDraft.denayThey) || 0;
+    const diye = parseFloat(formDraft.diye) || 0;
+    const balance = prevBal + denayThey - diye;
+    state.billPreview = {
+      id: uid(), company: state.company, date: formDraft.date, kisMalKaBill: formDraft.kisMalKaBill,
+      denayThey: denayThey, diye: diye, kisNeDiya: formDraft.kisNeDiya || '', tasfeer: formDraft.tasfeer || '',
+      prevBalance: prevBal, balance: balance
+    };
+    renderBillPreviewOverlay();
+    return;
+  }
+  if(act === 'close-bill-preview' || act === 'edit-bill-preview'){
+    removeOverlay('billPreviewOverlay'); state.billPreview = null; return;
+  }
+  if(act === 'confirm-bill-save'){
+    const p = state.billPreview;
+    if(!p) return;
+    state.billPreview = null;
+    removeOverlay('billPreviewOverlay');
+    showToast('محفوظ ہو رہا ہے...');
+    const result = await saveBillToDrive(p);
+    if(result.status === 'ok'){
+      saveBillAsImage(p);
+      playSound('success'); showToast('✅ بل محفوظ ہو گیا — تصویر ڈاؤن لوڈ ہو رہی ہے');
+      state.company = null; go('home');
+    } else { playSound('error'); showToast('بل محفوظ نہیں ہوا — دوبارہ کوشش کریں'); }
+    return;
+  }
+  if(act === 'bill-list-pick-company'){
+    const company = el.getAttribute('data-name');
+    go('bill-list', { company: company, loadingBills: true });
+    await reloadBills();
+    return;
+  }
+  if(act === 'close-bill-options'){ removeOverlay('billOptionsOverlay'); state.selectedBill = null; return; }
+  if(act === 'bill-do-delete'){
+    const b = state.selectedBill;
+    if(!b) return;
+    if(!(await askConfirm('کیا آپ واقعی یہ بل ڈیلیٹ کرنا چاہتے ہیں؟'))) return;
+    removeOverlay('billOptionsOverlay');
+    const result = await deleteBillOnDrive({ company: state.company, rowIndex: b.rowIndex });
+    state.selectedBill = null;
+    if(result.status === 'ok'){ playSound('success'); showToast('✅ بل ڈیلیٹ ہو گیا'); }
+    else { playSound('error'); showToast('بل ڈیلیٹ نہیں ہوا'); }
+    await reloadBills();
+    return;
+  }
+}
+
+/* ===================== attachHandlers ===================== */
+function attachHandlers(){
+  document.querySelectorAll('[data-act]').forEach(el => {
+    const a = el.getAttribute('data-act');
+    if(a === 'row-longpress' || a === 'bill-row-longpress') return;
+    el.addEventListener('click', onAction);
+  });
+
+  document.querySelectorAll('[data-act="row-longpress"]').forEach(row => {
+    row.addEventListener('touchstart', onRowTouchStart, { passive: true });
+    row.addEventListener('touchend', cancelLongPress);
+    row.addEventListener('touchmove', cancelLongPress);
+    row.addEventListener('touchcancel', cancelLongPress);
+    row.addEventListener('mousedown', onRowTouchStart);
+    row.addEventListener('mouseup', cancelLongPress);
+    row.addEventListener('mouseleave', cancelLongPress);
+    row.addEventListener('contextmenu', ev => ev.preventDefault());
+  });
+  document.querySelectorAll('[data-act="bill-row-longpress"]').forEach(row => {
+    row.addEventListener('touchstart', onBillRowTouchStart, { passive: true });
+    row.addEventListener('touchend', cancelLongPress);
+    row.addEventListener('touchmove', cancelLongPress);
+    row.addEventListener('touchcancel', cancelLongPress);
+    row.addEventListener('mousedown', onBillRowTouchStart);
+    row.addEventListener('mouseup', cancelLongPress);
+    row.addEventListener('mouseleave', cancelLongPress);
+    row.addEventListener('contextmenu', ev => ev.preventDefault());
+  });
+
+  const cs = document.getElementById('companySearch');
+  if(cs){
+    cs.addEventListener('input', ev => {
+      state.companySearch = ev.target.value;
+      const wrap = document.getElementById('companyGridWrap');
+      if(!wrap) return;
+      const active = cs.dataset.active === '1' ? (state.company || null) : null;
+      wrap.innerHTML = companyGridHtml(state[cs.dataset.list] || [], state.companySearch, cs.dataset.actname, active);
+      wrap.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', onAction));
+    });
+  }
+
+  const pinInp = document.getElementById('pinInput');
+  if(pinInp){
+    pinInp.addEventListener('keydown', ev => {
+      if(ev.key === 'Enter'){ ev.preventDefault(); const btn = document.getElementById('pinSubmitBtn'); if(btn) btn.click(); }
+    });
+    setTimeout(() => pinInp.focus(), 100);
+  }
+
+  const bd = document.getElementById('f_denayThey');
+  const bp = document.getElementById('f_diye');
+  const bl = document.getElementById('billPreviewBalance');
+  if(bd && bp && bl){
+    const upd = () => {
+      formDraft.denayThey = bd.value; formDraft.diye = bp.value;
+      const prev = state.billPrevBalance || 0;
+      bl.textContent = fmt(prev + (parseFloat(bd.value) || 0) - (parseFloat(bp.value) || 0));
+    };
+    bd.addEventListener('input', upd); bp.addEventListener('input', upd);
+  }
+}
+
+/* ===================== Long Press — Entry ===================== */
+function onRowTouchStart(e){
+  cancelLongPress();
+  const row = e.currentTarget;
+  const idx = parseInt(row.getAttribute('data-idx'), 10);
+  pressedRow = row; row.classList.add('pressed');
+  longPressTimer = setTimeout(() => {
+    row.classList.remove('pressed'); pressedRow = null;
+    const entries = state.brandEntries || [];
+    state.selectedEntry = entries[idx];
+    state.showEntryOptions = true;
+    render();
+  }, 550);
+}
+/* ===================== Long Press — Bill ===================== */
+function onBillRowTouchStart(e){
+  cancelLongPress();
+  const row = e.currentTarget;
+  const idx = parseInt(row.getAttribute('data-idx'), 10);
+  pressedRow = row; row.classList.add('pressed');
+  longPressTimer = setTimeout(() => {
+    row.classList.remove('pressed'); pressedRow = null;
+    const bills = state.bills || [];
+    state.selectedBill = bills[idx];
+    render();
+  }, 550);
+}
+
+/* ===================== PWA Setup ===================== */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(err => console.log('SW fail', err));
+  });
+}
+
+/* ===================== Audio Unlock (First Tap) ===================== */
+document.addEventListener('click', function unlockAudio(){
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+  }catch(e){}
+  document.removeEventListener('click', unlockAudio);
+}, { once: true });
+
+/* ===================== Start ===================== */
+loadData();
+</script>
+</body>
+</html>
